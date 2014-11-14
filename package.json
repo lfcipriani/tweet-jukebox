@@ -1,0 +1,16 @@
+{
+  "name": "tweet-jukebox",
+  "description": "Jukebox powered by tweets",
+  "version": "0.0.1",
+  "author": {
+    "name": "Luis Cipriani",
+    "email": "luis@twitter.com",
+    "url": "https://dev.twitter.com/"
+  },
+  "dependencies": {
+    "twit": "*",
+    "underscore": "*",
+    "underscore.string": "*",
+    "request": "*"
+  }
+}
