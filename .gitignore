@@ -1,3 +1,6 @@
+# App related
+config/config.js
+
 # Logs
 logs
 *.log
