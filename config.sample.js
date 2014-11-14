@@ -15,6 +15,9 @@ module.exports = {
         admins: ["EDIT"],
         // captureStrategy: only streaming supported, will support rest in the future
         capture_strategy: "streaming"
+    },
+    security: {
+        token_verification_enabled: true
     }
 }
 
