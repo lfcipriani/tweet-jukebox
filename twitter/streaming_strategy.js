@@ -1,6 +1,6 @@
 "use strict";
 
-var config = require('../config/config');
+var config = require('../config');
 var Twit = require('twit');
 
 var T = new Twit(config.twitter.api_keys);
