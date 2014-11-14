@@ -12,12 +12,10 @@ module.exports = {
         userStream = T.stream('user', { "with": "user" });
     },
 
-    onTweetRequest: function(callback) {
+    onTweet: function(callback) {
         userStream.on('tweet', function(tweet) {
             console.log(tweet);
-            if (!tweet.retweeted_status && 
-                tweet.in_reply_to_screen_name && 
-                tweet.in_reply_to_screen_name == config.twitter.jukebox) {
+            if (validReply(tweet)) {
                 // TODO: implement rate limit
                 callback(tweet);
             }
@@ -30,7 +28,9 @@ module.exports = {
 
 };
 
-
-
-
+function validReply(tweet) {
+    return (!tweet.retweeted_status && 
+            tweet.in_reply_to_screen_name && 
+            tweet.in_reply_to_screen_name == config.twitter.jukebox);
+}
 

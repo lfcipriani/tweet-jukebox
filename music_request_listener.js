@@ -5,6 +5,6 @@ var Stream = require('./twitter/' + config.twitter.capture_strategy + '_strategy
 
 Stream.init();
 
-Stream.onTweetRequest(function(tweet) {
+Stream.onTweet(function(tweet) {
    console.log(tweet.text); 
 });
