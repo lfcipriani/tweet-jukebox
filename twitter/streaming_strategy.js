@@ -24,13 +24,13 @@ module.exports = {
         userStream.on('friends', function(friendsMsg) {
             console.log("Friends received... Capturing replies...");
         });
+    },
+
+    validReply: function(tweet) {
+        return (!tweet.retweeted_status && 
+                tweet.in_reply_to_screen_name && 
+                tweet.in_reply_to_screen_name == config.twitter.jukebox);
     }
 
 };
-
-function validReply(tweet) {
-    return (!tweet.retweeted_status && 
-            tweet.in_reply_to_screen_name && 
-            tweet.in_reply_to_screen_name == config.twitter.jukebox);
-}
 

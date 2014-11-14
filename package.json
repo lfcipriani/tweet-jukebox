@@ -7,10 +7,16 @@
     "email": "luis@twitter.com",
     "url": "https://dev.twitter.com/"
   },
+  "scripts": {
+    "test": "mocha"
+  },
   "dependencies": {
     "twit": "*",
     "underscore": "*",
     "underscore.string": "*",
     "request": "*"
+  },
+  "devDependencies": {
+    "mocha": "*"
   }
 }
