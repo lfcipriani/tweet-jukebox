@@ -62,17 +62,36 @@ var parseUtil = {
         var text = tweet.text;
         text = text.replace("@"+config.twitter.jukebox, ""); // cleaning reply mention
 
-        var terms = text.split(/\bby\b/);
-        var param = {};
-        var any = terms[0].match(/^\s(?:play\s)?(.*)/);
-        if (any && any[1] != "") {
-            param["any"] = [any[1]]; 
-        } 
-        if (terms.length > 1) {
-            param["artist"] = terms[1];
+        var param = { "query": null, "uris": null };
+
+        var uris = [];
+        if (tweet["entities"] && tweet["entities"]["hashtags"]) {
+            var hashtags = tweet["entities"]["hashtags"];
+            for (var i = 0; i < hashtags.length; i++) {
+                if (_.contains(["spotify", "youtube", "soundcloud"], hashtags[i]["text"])) {
+                    uris.push(hashtags[i]["text"] + ":");
+                }
+            }
         }
 
-        return (_.isEmpty(param) ? null : param);
+        var terms = text.split(/\bby\b/);
+        var any = terms[0].match(/^\s(?:play\s)?(.*)/);
+        var query = {};
+        if (any && any[1] != "") {
+            query["any"] = [any[1]]; 
+        } 
+        if (terms.length > 1) {
+            query["artist"] = terms[1];
+        }
+
+        if (_.isEmpty(query)) { query = null }
+        if (_.isEmpty(uris)) { uris = null }
+
+        if (query || uris) {
+            return { "query": query, "uris": uris };
+        } else {
+            return null;
+        }
     }
 };
 

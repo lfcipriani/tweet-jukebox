@@ -93,13 +93,16 @@ describe('commands/tweet_parser', function(){
         tweet = {
             text: "@" + config.twitter.jukebox + " play like a virgin by madonna",
             user: { screen_name: "lfcipriani"},
-            id_str: "1234567"
+            id_str: "1234567",
+            "entities": {
+                "hashtags": [{ "text": "ftw" }]
+            }
         };
         var result = tweetParser.parse(tweet);
 
         assert.equal(result.type, "SEARCH");
-        assert.notEqual(result.param["any"][0].indexOf("like a virgin"), -1);
-        assert.notEqual(result.param["artist"].indexOf("madonna"), -1);
+        assert.notEqual(result.param["query"]["any"][0].indexOf("like a virgin"), -1);
+        assert.notEqual(result.param["query"]["artist"].indexOf("madonna"), -1);
 
         tweet = {
             text: "@" + config.twitter.jukebox + " play like a virgin",
@@ -109,8 +112,8 @@ describe('commands/tweet_parser', function(){
         var result = tweetParser.parse(tweet);
 
         assert.equal(result.type, "SEARCH");
-        assert.notEqual(result.param["any"][0].indexOf("like a virgin"), -1);
-        assert.equal(result.param["artist"], undefined);
+        assert.notEqual(result.param["query"]["any"][0].indexOf("like a virgin"), -1);
+        assert.equal(result.param["query"]["artist"], undefined);
 
         tweet = {
             text: "@" + config.twitter.jukebox + " play by madonna",
@@ -120,8 +123,35 @@ describe('commands/tweet_parser', function(){
         var result = tweetParser.parse(tweet);
 
         assert.equal(result.type, "SEARCH");
-        assert.equal(result.param["any"], undefined);
-        assert.notEqual(result.param["artist"].indexOf("madonna"), -1);
+        assert.equal(result.param["query"]["any"], undefined);
+        assert.notEqual(result.param["query"]["artist"].indexOf("madonna"), -1);
+
+        tweet = {
+            text: "@" + config.twitter.jukebox + " play like a virgin by madonna",
+            user: { screen_name: "lfcipriani"},
+            id_str: "1234567",
+            "entities": {
+                "hashtags": [{ "text": "youtube" }]
+            }
+        };
+        var result = tweetParser.parse(tweet);
+
+        assert.equal(result.type, "SEARCH");
+        assert.notEqual(result.param["uris"][0].indexOf("youtube"), -1);
+
+        tweet = {
+            text: "@" + config.twitter.jukebox + " play like a virgin by madonna",
+            user: { screen_name: "lfcipriani"},
+            id_str: "1234567",
+            "entities": {
+                "hashtags": [{ "text": "youtube" }, { "text": "soundcloud" }]
+            }
+        };
+        var result = tweetParser.parse(tweet);
+
+        assert.equal(result.type, "SEARCH");
+        assert.notEqual(result.param["uris"][0].indexOf("youtube"), -1);
+        assert.equal(result.param["uris"].length, 2);
 
         tweet = {
             text: "@" + config.twitter.jukebox + "",
@@ -131,6 +161,7 @@ describe('commands/tweet_parser', function(){
         var result = tweetParser.parse(tweet);
 
         assert.equal(result, null);
+
     });
 
   });
