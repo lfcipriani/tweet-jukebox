@@ -14,7 +14,8 @@
     "twit": "*",
     "underscore": "*",
     "underscore.string": "*",
-    "request": "*"
+    "request": "*",
+    "mopidy": "*"
   },
   "devDependencies": {
     "mocha": "*"
