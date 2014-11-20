@@ -13,9 +13,9 @@ module.exports = {
     },
 
     onTweet: function(callback) {
+        var that = this;
         userStream.on('tweet', function(tweet) {
-            console.log(tweet);
-            if (validReply(tweet)) {
+            if (that.validReply(tweet)) {
                 // TODO: implement rate limit
                 callback(tweet);
             }
