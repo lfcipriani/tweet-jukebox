@@ -60,7 +60,6 @@ var parseUtil = {
 
     extractSearch: function(tweet) {
         var text = tweet.text;
-        text = text.replace("@"+config.twitter.jukebox, ""); // cleaning reply mention
 
         var param = { "query": null, "uris": null };
 
@@ -69,11 +68,16 @@ var parseUtil = {
             var hashtags = tweet["entities"]["hashtags"];
             for (var i = 0; i < hashtags.length; i++) {
                 if (_.contains(["spotify", "youtube", "soundcloud"], hashtags[i]["text"])) {
+                    console.log(text.slice(0,hashtags[i]["indices"][0]));
                     uris.push(hashtags[i]["text"] + ":");
+                    text = text.slice(0,hashtags[i]["indices"][0]) + text.slice(hashtags[i]["indices"][1],text.length);
+                    console.log(text);
                 }
             }
         }
 
+        text = text.replace("@"+config.twitter.jukebox, ""); // cleaning reply mention
+        text = text.replace("#", ""); 
         var terms = text.split(/\bby\b/);
         var any = terms[0].match(/^\s(?:play\s)?(.*)/);
         var query = {};
