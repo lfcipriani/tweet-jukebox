@@ -20,6 +20,18 @@ mopidy.on("state:offline", function () {
     mopidyOnline = true; 
 });
 
+//event:trackPlaybackStarted
+//event:playbackStateChanged { old_state: 'stopped', new_state: 'playing' }
+mopidy.on("event:trackPlaybackEnded", function (data) {
+    var lastTrack = data;
+    mopidy.tracklist.getLength().then(function(data) {
+        if ((data - 1) == lastTrack.tl_track.tlid) {
+            console.log("cleaning playlist");
+            mopidy.tracklist.clear();
+        }
+    });
+});
+
 module.exports = {
     isOnline: mopidyOnline,
 
@@ -31,15 +43,20 @@ module.exports = {
         mopidy.playback.pause();
     },
 
-    add: function(uri) {
-        mopidy.tracklist.add({"uri": uri}).then(function(data){
-            if (data.result && data.result.length > 0) {
-                // added
-                console.log("added");
-            } else {
-                // not added
-                console.log("not added");
-            }
+    next: function() {
+        mopidy.playback.next();
+    },
+
+    clear: function() {
+        mopidy.tracklist.clear();
+    },
+
+    add: function(uri, callback) {
+        mopidy.tracklist.add({"tracks": null, "at_position": null, "uri": uri}).then(function(data){
+            if (data.length > 0) {
+                console.log("Music added");
+                callback();
+            } 
         });
     },
 
@@ -66,14 +83,13 @@ module.exports = {
                 callback(null);
             } 
         }); 
-    }
-
-    next: function() {
-        mopidy.playback.next();
     },
 
-    clear: function() {
-        mopidy.tracklist.clear();
+    getPlayerState: function(callback) {
+        mopidy.playback.getState().then(function(data){
+            console.log("Player state: "+ data);
+            callback(data);
+        });
     }
 };
 
