@@ -68,10 +68,8 @@ var parseUtil = {
             var hashtags = tweet["entities"]["hashtags"];
             for (var i = 0; i < hashtags.length; i++) {
                 if (_.contains(["spotify", "youtube", "soundcloud"], hashtags[i]["text"])) {
-                    console.log(text.slice(0,hashtags[i]["indices"][0]));
                     uris.push(hashtags[i]["text"] + ":");
                     text = text.slice(0,hashtags[i]["indices"][0]) + text.slice(hashtags[i]["indices"][1],text.length);
-                    console.log(text);
                 }
             }
         }

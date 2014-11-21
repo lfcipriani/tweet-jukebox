@@ -14,11 +14,11 @@ Stream.onTweet(function(tweet) {
 
     console.log("Tweet: "+tweet.text);
     if (request) {
-        console.log("Request: " + request.type + " " + JSON.stringify(request.param));
+        console.log("Request from @"+ request.fromUser +": " + request.type + " " + JSON.stringify(request.param));
         if (request.type == "SEARCH") {
             var music = Music.search(request.param, function(m) {
                 if (m) {
-                    console.log("Music: " + m.name + " ("+m.uri+")" );
+                    console.log("Music: " + m.name + "\n("+JSON.stringify(m)+")" );
                     Music.add(m.uri, function() {
                         Music.getPlayerState(function(state){
                             if (state != "playing") {
