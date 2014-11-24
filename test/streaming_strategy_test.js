@@ -1,9 +1,9 @@
 var assert = require("assert");
 
 var config = require('../config');
-var tweetParser = require("../twitter/streaming_strategy");
+var tweetParser = require("../libs/streaming_strategy");
 
-describe('twitter/streaming_strategy', function(){
+describe('libs/streaming_strategy', function(){
 
   describe('tweet validation', function(){
 

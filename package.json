@@ -7,6 +7,10 @@
     "email": "luis@twitter.com",
     "url": "https://dev.twitter.com/"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lfcipriani/tweet-jukebox"
+  },
   "scripts": {
     "test": "mocha"
   },
@@ -15,7 +19,8 @@
     "underscore": "*",
     "underscore.string": "*",
     "request": "*",
-    "mopidy": "*"
+    "mopidy": "*",
+    "lcd": "*"
   },
   "devDependencies": {
     "mocha": "*"

@@ -1,9 +1,9 @@
 var assert = require("assert");
 
 var config = require('../config');
-var tweetParser = require("../commands/tweet_parser");
+var tweetParser = require("../libs/tweet_parser");
 
-describe('commands/tweet_parser', function(){
+describe('libs/tweet_parser', function(){
 
   describe('token verification', function(){
 
@@ -20,6 +20,10 @@ describe('commands/tweet_parser', function(){
         assert.equal(result.param, "1234");
     });
 
+  });
+
+  describe('URL parsing', function(){
+    
     it('should parse links from youtube', function() {
         tweet = {
             text: "@" + config.twitter.jukebox + " play ",
@@ -88,6 +92,10 @@ describe('commands/tweet_parser', function(){
         assert.equal(result.type, "LINK");
         assert.equal(result.param["soundcloud"], "lfcipriani/beastie-boys-i-dontt-know");
     });
+
+  });
+
+  describe('Search', function(){
 
     it('should parse search requests for music', function() {
         tweet = {

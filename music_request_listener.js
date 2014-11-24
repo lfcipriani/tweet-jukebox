@@ -1,9 +1,9 @@
 'use strict';
 
 var config = require('./config');
-var Stream = require('./twitter/' + config.twitter.capture_strategy + '_strategy');
-var TweetParser = require('./commands/tweet_parser');
-var Music = require('./music_controller/mopidy');
+var Stream = require('./libs/' + config.twitter.capture_strategy + '_strategy');
+var TweetParser = require('./libs/tweet_parser');
+var Music = require('./libs/mopidy');
 
 Stream.init();
 
