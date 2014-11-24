@@ -2,6 +2,7 @@
 
 var config = require('../config');
 var _ = require('underscore');
+_.str = require('underscore.string');
 
 var TweetRequest = function(type, via, fromUser, tweetId, param) {
     this.type = type;
@@ -9,6 +10,14 @@ var TweetRequest = function(type, via, fromUser, tweetId, param) {
     this.fromUser = fromUser;
     this.tweetId = tweetId;
     this.param = param;
+}
+
+var spaceIt = function(str, startIndex, endIndex) {
+    var indexSliceBegin = (startIndex == 0 ? 0 : startIndex - 1);
+    var indexSliceEnd = (endIndex == str.length -1 ? str.length - 1 : endIndex + 1);
+    return str.slice(0,indexSliceBegin) +
+        + _.str.repeat(" ", endIndex - startIndex)
+        + text.slice(indexSliceEnd, str.length - 1);
 }
 
 var parseUtil = {
@@ -63,19 +72,36 @@ var parseUtil = {
 
         var param = { "query": null, "uris": null };
 
+        // cleaning text
         var uris = [];
         if (tweet["entities"] && tweet["entities"]["hashtags"]) {
             var hashtags = tweet["entities"]["hashtags"];
             for (var i = 0; i < hashtags.length; i++) {
                 if (_.contains(["spotify", "youtube", "soundcloud"], hashtags[i]["text"])) {
                     uris.push(hashtags[i]["text"] + ":");
-                    text = text.slice(0,hashtags[i]["indices"][0]) + text.slice(hashtags[i]["indices"][1],text.length);
+                    text = spaceIt(text, hashtags[i]["indices"][0], hashtags[i]["indices"][1]); 
                 }
             }
         }
 
-        text = text.replace("@"+config.twitter.jukebox, ""); // cleaning reply mention
+        if (tweet["entities"] && tweet["entities"]["urls"]) {
+            var urls = tweet["entities"]["urls"];
+            for (var i = 0; i < urls.length; i++) {
+                text = spaceIt(text, urls[i]["indices"][0], urls[i]["indices"][1]); 
+            }
+        }
+
+        if (tweet["entities"] && tweet["entities"]["mentions"]) {
+            var mentions = tweet["entities"]["mentions"];
+            for (var i = 0; i < mentions.length; i++) {
+                text = spaceIt(text, mentions[i]["indices"][0], mentions[i]["indices"][1]); 
+            }
+        }
+
+        _.str.clean(text);
         text = text.replace("#", ""); 
+
+        // building search
         var terms = text.split(/\bby\b/);
         var any = terms[0].match(/^\s(?:play\s)?(.*)/);
         var query = {};

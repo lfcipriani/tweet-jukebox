@@ -29,6 +29,7 @@ mopidy.on("event:trackPlaybackStarted", function (data) {
 mopidy.on("event:trackPlaybackEnded", function (data) {
     var lastTrack = data;
     mopidy.tracklist.getLength().then(function(data) {
+        console.log("Length: "+data+" - "+lastTrack.tl_track.tlid);
         if ((data - 1) == lastTrack.tl_track.tlid) {
             console.log("cleaning playlist");
             mopidy.tracklist.clear();
