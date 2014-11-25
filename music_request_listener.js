@@ -9,26 +9,23 @@ var Commands = require('./libs/commands')(Music);
 Stream.init();
 
 Stream.onTweet(function(tweet) {
-    var request = TwitterParser.parse(tweet);
-
-    console.log("Tweet: "+tweet.text);
-    if (request) {
-        console.log("Request from @"+ request.fromUser +": " + request.type + " " + JSON.stringify(request.param));
-
-        Commands.getCommand(request.type).run(request, 
-            function(){ console.log("cmd success") }, 
-            function(){ console.log("cmd error") }
-        );
-    }
+    execute(tweet);
 });
 
 Stream.onDM(function(dm) {
-    // direct_message
-    //  sender_screen_name
-    //  text
-    //  recipient_screen_name
-    //  entities
-    var request = TwitterParser.parse(dm);
-    console.log(JSON.stringify(dm));
+    execute(dm);
 });
 
+function execute(entity) {
+    var request = TwitterParser.parse(entity);
+    if (request) {
+        var cmd = Commands.getCommand(request.type)
+        if (cmd) { 
+            cmd.run(request); 
+        } else {
+            console.log("Disabled/Invalid command: " + request.type);
+        }
+    } else {
+        console.log("Not able to understand the request: " + JSON.stringify(entity));
+    }
+}
