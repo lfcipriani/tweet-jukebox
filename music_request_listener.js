@@ -2,15 +2,13 @@
 
 var config = require('./config');
 var Stream = require('./libs/' + config.twitter.capture_strategy + '_strategy');
-var TweetParser = require('./libs/tweet_parser');
+var TwitterParser = require('./libs/twitter_parser');
 var Music = require('./libs/mopidy');
 
 Stream.init();
 
-var currentTrack = 0;
-
 Stream.onTweet(function(tweet) {
-    var request = TweetParser.parse(tweet);
+    var request = TwitterParser.parse(tweet);
 
     console.log("Tweet: "+tweet.text);
     if (request) {
@@ -40,6 +38,7 @@ Stream.onDM(function(dm) {
     //  text
     //  recipient_screen_name
     //  entities
+    var request = TwitterParser.parse(dm);
     console.log(JSON.stringify(dm));
 });
 

@@ -1,9 +1,9 @@
 var assert = require("assert");
 
 var config = require('../config');
-var tweetParser = require("../libs/tweet_parser");
+var tweetParser = require("../libs/twitter_parser");
 
-describe('libs/tweet_parser', function(){
+describe('libs/twitter_parser', function(){
 
   describe('token verification', function(){
 
@@ -18,6 +18,7 @@ describe('libs/tweet_parser', function(){
 
         assert.equal(result.type, "TOKEN");
         assert.equal(result.param, "1234");
+        assert.equal(result.via, "tweet");        
     });
 
   });
@@ -45,6 +46,7 @@ describe('libs/tweet_parser', function(){
 
         assert.equal(result.type, "LINK");
         assert.equal(result.param["youtube"], "wZZ7oFKsKzY");
+        assert.equal(result.via, "tweet");        
     });
 
     it('should parse links from spotify', function() {
@@ -68,6 +70,7 @@ describe('libs/tweet_parser', function(){
 
         assert.equal(result.type, "LINK");
         assert.equal(result.param["spotify"], "4v0tapCyBcdyEbIpd1zZGU");
+        assert.equal(result.via, "tweet");        
     });
 
     it('should parse links from soundcloud', function() {
@@ -91,6 +94,7 @@ describe('libs/tweet_parser', function(){
 
         assert.equal(result.type, "LINK");
         assert.equal(result.param["soundcloud"], "lfcipriani/beastie-boys-i-dontt-know");
+        assert.equal(result.via, "tweet");        
     });
 
   });
@@ -133,6 +137,7 @@ describe('libs/tweet_parser', function(){
         assert.equal(result.type, "SEARCH");
         assert.notEqual(result.param["query"]["any"].indexOf("like a virgin"), -1);
         assert.notEqual(result.param["query"]["artist"].indexOf("madonna"), -1);
+        assert.equal(result.via, "tweet");        
 
         tweet = {
             text: "@" + config.twitter.jukebox + " play like a virgin",
@@ -158,6 +163,7 @@ describe('libs/tweet_parser', function(){
         assert.equal(result.type, "SEARCH");
         assert.notEqual(result.param["query"]["any"].indexOf("like a virgin"), -1);
         assert.equal(result.param["query"]["artist"], undefined);
+        assert.equal(result.via, "tweet");        
 
         tweet = {
             text: "@" + config.twitter.jukebox + " play by madonna",
@@ -183,6 +189,7 @@ describe('libs/tweet_parser', function(){
         assert.equal(result.type, "SEARCH");
         assert.equal(result.param["query"]["any"], undefined);
         assert.notEqual(result.param["query"]["artist"].indexOf("madonna"), -1);
+        assert.equal(result.via, "tweet");        
 
         tweet = {
             text: "@" + config.twitter.jukebox + " play like a virgin by madonna",
@@ -219,6 +226,7 @@ describe('libs/tweet_parser', function(){
 
         assert.equal(result.type, "SEARCH");
         assert.notEqual(result.param["uris"][0].indexOf("youtube"), -1);
+        assert.equal(result.via, "tweet");        
 
         tweet = {
             text: "@" + config.twitter.jukebox + " play like a virgin by madonna",
@@ -262,6 +270,7 @@ describe('libs/tweet_parser', function(){
         assert.equal(result.type, "SEARCH");
         assert.notEqual(result.param["uris"][0].indexOf("youtube"), -1);
         assert.equal(result.param["uris"].length, 2);
+        assert.equal(result.via, "tweet");        
 
         tweet = {
             text: "@" + config.twitter.jukebox + "",
@@ -289,5 +298,74 @@ describe('libs/tweet_parser', function(){
     });
 
   });
+
+  describe('DM commands', function(){
+
+    it('should parse a hash command via DM', function() {
+        dm = {
+            "direct_message": {
+                "id": 537050416513826800,
+                "id_str": "537050416513826816",
+                "text": "#ban lfcipriani,twitterapi",
+                "sender_id": 2304673544,
+                "sender_id_str": "2304673544",
+                "sender_screen_name": config.twitter.admins[0],
+                "recipient_id": 76140129,
+                "recipient_id_str": "76140129",
+                "recipient_screen_name": config.twitter.jukebox,
+            }
+        }
+
+        var result = tweetParser.parse(dm);
+
+        assert.equal(result.type, "HASHCOMMAND");
+        assert.equal(result.param["ban"][0], "lfcipriani");
+        assert.equal(result.param["ban"][1], "twitterapi");
+        assert.equal(result.via, "dm");
+    });
+
+    it('should parse a hash command via DM without parameters', function() {
+        dm = {
+            "direct_message": {
+                "id": 537050416513826800,
+                "id_str": "537050416513826816",
+                "text": "#play",
+                "sender_id": 2304673544,
+                "sender_id_str": "2304673544",
+                "sender_screen_name": config.twitter.admins[0],
+                "recipient_id": 76140129,
+                "recipient_id_str": "76140129",
+                "recipient_screen_name": config.twitter.jukebox,
+            }
+        }
+
+        var result = tweetParser.parse(dm);
+
+        assert.equal(result.type, "HASHCOMMAND");
+        assert.equal(result.param["play"], null);
+    });
+
+    it('should not accept an invalid command', function() {
+        dm = {
+            "direct_message": {
+                "id": 537050416513826800,
+                "id_str": "537050416513826816",
+                "text": "play blabla #hashtag",
+                "sender_id": 2304673544,
+                "sender_id_str": "2304673544",
+                "sender_screen_name": config.twitter.admins[0],
+                "recipient_id": 76140129,
+                "recipient_id_str": "76140129",
+                "recipient_screen_name": config.twitter.jukebox,
+            }
+        }
+
+        var result = tweetParser.parse(dm);
+
+        assert.equal(result, null);
+    });
+
+  });
+
 
 });

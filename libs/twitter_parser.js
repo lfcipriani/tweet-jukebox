@@ -4,11 +4,11 @@ var config = require('../config');
 var _ = require('underscore');
 _.str = require('underscore.string');
 
-var TweetRequest = function(type, via, fromUser, tweetId, param) {
+var TwitterRequest = function(type, via, fromUser, id, param) {
     this.type = type;
     this.via = via;
     this.fromUser = fromUser;
-    this.tweetId = tweetId;
+    this.id = id;
     this.param = param;
 }
 
@@ -100,8 +100,8 @@ var parseUtil = {
         text = text.replace("#", ""); 
 
         // building search
-        var terms = text.split(/\bby\b/);
-        var any = terms[0].match(/^(?:play\s)?(.*)/);
+        var terms = text.split(/\bby\b/i);
+        var any = terms[0].match(/^(?:play\s)?(.*)/i);
         var query = {};
         if (any && any[1] != "") {
             query["any"] = any[1]; 
@@ -118,6 +118,17 @@ var parseUtil = {
         } else {
             return null;
         }
+    },
+
+    extractHashCommand: function(str) {
+        var result = str.match(/^#(\S+)\s?(\S+)?/i);
+        if (result) {
+            var obj = {};
+            obj[result[1]] = (result[2] ? result[2].split(",") : null);
+            return obj;
+        } else {
+            return null;
+        }
     }
 };
 
@@ -129,36 +140,55 @@ module.exports = {
     parse: function(tweet) {
         var type = null;
         var param = null;
+        var via = null;
+        var fromUser = null;
+        var id = null;
 
-        // checking if this is a token user verification 
-        param = parseUtil.extractToken(tweet);
-        if (param) {
-            type = "TOKEN";
-        }
+        if (tweet.direct_message) {
 
-        // checking if user want to play an URL
-        if (!type) {
-            param = parseUtil.extractUrl(tweet);
+            via = "dm";
+            fromUser = tweet.direct_message.sender_screen_name;
+            id = tweet.direct_message.id_str;
+
+            param = parseUtil.extractHashCommand(tweet.direct_message.text);
             if (param) {
-                type = "LINK";
-            }
-        }
-
-        // checking if user want to search and play
-        if (!type) {
-            param = parseUtil.extractSearch(tweet);
-            if (param) {
-                type = "SEARCH";
+                type = "HASHCOMMAND";
             } else {
                 return null;
             }
+
+        } else {
+
+            via = "tweet";
+            fromUser = tweet.user.screen_name;
+            id = tweet.id_str;
+        
+            // checking if this is a token user verification 
+            param = parseUtil.extractToken(tweet);
+            if (param) {
+                type = "TOKEN";
+            }
+
+            // checking if user want to play an URL
+            if (!type) {
+                param = parseUtil.extractUrl(tweet);
+                if (param) {
+                    type = "LINK";
+                }
+            }
+
+            // checking if user want to search and play
+            if (!type) {
+                param = parseUtil.extractSearch(tweet);
+                if (param) {
+                    type = "SEARCH";
+                } else {
+                    return null;
+                }
+            }
         }
 
-        var via = "tweet";
-        var fromUser = tweet.user.screen_name;
-        var tweetId = tweet.id_str;
-
-        return new TweetRequest(type, via, fromUser, tweetId, param);
+        return new TwitterRequest(type, via, fromUser, id, param);
     }
 };
 
