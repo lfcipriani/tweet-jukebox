@@ -1,3 +1,4 @@
 language: node_js
 node_js:
   - "0.10"
+before_script: "cp ./test/config.test.js ./config.js"
