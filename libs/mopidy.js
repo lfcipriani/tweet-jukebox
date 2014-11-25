@@ -76,7 +76,6 @@ module.exports = {
                             _.each(result.tracks, function(t) {
                                 resultTracks.push(t);
                             });
-                            //console.log(_.map(result.tracks, function(d){ return d["uri"] + " > " + d["name"] }));
                         }
                     }
                 });

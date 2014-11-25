@@ -34,3 +34,12 @@ Stream.onTweet(function(tweet) {
     }
 });
 
+Stream.onDM(function(dm) {
+    // direct_message
+    //  sender_screen_name
+    //  text
+    //  recipient_screen_name
+    //  entities
+    console.log(JSON.stringify(dm));
+});
+
