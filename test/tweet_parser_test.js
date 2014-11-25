@@ -97,36 +97,86 @@ describe('libs/tweet_parser', function(){
 
   describe('Search', function(){
 
+    it('replaceWithSpaces', function() {
+        var result = tweetParser.replaceWithSpaces("@testando_123 play like a virgin by madonna",0,13);
+        assert.equal(result, "              play like a virgin by madonna");
+    
+        var result = tweetParser.replaceWithSpaces("@testando_1234play5like a virgin by madonna",14,18);
+        assert.equal(result, "@testando_1234    5like a virgin by madonna");
+
+        var result = tweetParser.replaceWithSpaces("@testando_123 play like a virgin by madonna",36,43);
+        assert.equal(result, "@testando_123 play like a virgin by        ");
+    });
+
     it('should parse search requests for music', function() {
         tweet = {
             text: "@" + config.twitter.jukebox + " play like a virgin by madonna",
             user: { screen_name: "lfcipriani"},
             id_str: "1234567",
-            "entities": {
-                "hashtags": [{ "text": "ftw" }]
+            entities: {
+                "urls": [],
+                "user_mentions": [
+                {
+                    "indices": [0,13],
+                    "id_str": "76140129",
+                    "id": 76140129,
+                    "name": "Testando 1, 2, 3",
+                    "screen_name": "testando_123"
+                }
+                ],
+                "symbols": [],
+                "hashtags": []
             }
         };
         var result = tweetParser.parse(tweet);
 
         assert.equal(result.type, "SEARCH");
-        assert.notEqual(result.param["query"]["any"][0].indexOf("like a virgin"), -1);
+        assert.notEqual(result.param["query"]["any"].indexOf("like a virgin"), -1);
         assert.notEqual(result.param["query"]["artist"].indexOf("madonna"), -1);
 
         tweet = {
             text: "@" + config.twitter.jukebox + " play like a virgin",
             user: { screen_name: "lfcipriani"},
-            id_str: "1234567"
+            id_str: "1234567",
+            entities: {
+                "urls": [],
+                "user_mentions": [
+                {
+                    "indices": [0,13],
+                    "id_str": "76140129",
+                    "id": 76140129,
+                    "name": "Testando 1, 2, 3",
+                    "screen_name": "testando_123"
+                }
+                ],
+                "symbols": [],
+                "hashtags": []
+            }
         };
         var result = tweetParser.parse(tweet);
 
         assert.equal(result.type, "SEARCH");
-        assert.notEqual(result.param["query"]["any"][0].indexOf("like a virgin"), -1);
+        assert.notEqual(result.param["query"]["any"].indexOf("like a virgin"), -1);
         assert.equal(result.param["query"]["artist"], undefined);
 
         tweet = {
             text: "@" + config.twitter.jukebox + " play by madonna",
             user: { screen_name: "lfcipriani"},
-            id_str: "1234567"
+            id_str: "1234567",
+            entities: {
+                "urls": [],
+                "user_mentions": [
+                {
+                    "indices": [0,13],
+                    "id_str": "76140129",
+                    "id": 76140129,
+                    "name": "Testando 1, 2, 3",
+                    "screen_name": "testando_123"
+                }
+                ],
+                "symbols": [],
+                "hashtags": []
+            }
         };
         var result = tweetParser.parse(tweet);
 
@@ -139,9 +189,32 @@ describe('libs/tweet_parser', function(){
             user: { screen_name: "lfcipriani"},
             id_str: "1234567",
             "entities": {
-                "hashtags": [{ "text": "youtube" }]
-            }
+                "urls": [],
+                "user_mentions": [
+                {
+                    "indices": [
+                    0,
+                    13
+                    ],
+                    "id_str": "76140129",
+                    "id": 76140129,
+                    "name": "Testando 1, 2, 3",
+                    "screen_name": "testando_123"
+                }
+                ],
+                "symbols": [],
+                "hashtags": [
+                {
+                    "indices": [
+                    44,
+                    52
+                    ],
+                    "text": "youtube"
+                }
+                ]
+            },
         };
+
         var result = tweetParser.parse(tweet);
 
         assert.equal(result.type, "SEARCH");
@@ -152,8 +225,37 @@ describe('libs/tweet_parser', function(){
             user: { screen_name: "lfcipriani"},
             id_str: "1234567",
             "entities": {
-                "hashtags": [{ "text": "youtube" }, { "text": "soundcloud" }]
-            }
+                "urls": [],
+                "user_mentions": [
+                {
+                    "indices": [
+                    0,
+                    13
+                    ],
+                    "id_str": "76140129",
+                    "id": 76140129,
+                    "name": "Testando 1, 2, 3",
+                    "screen_name": "testando_123"
+                }
+                ],
+                "symbols": [],
+                "hashtags": [
+                {
+                    "indices": [
+                    44,
+                    52
+                    ],
+                    "text": "youtube"
+                },
+                {
+                    "indices": [
+                    53,
+                    64
+                    ],
+                    "text": "soundcloud"
+                }
+                ]
+            },
         };
         var result = tweetParser.parse(tweet);
 
@@ -164,7 +266,21 @@ describe('libs/tweet_parser', function(){
         tweet = {
             text: "@" + config.twitter.jukebox + "",
             user: { screen_name: "lfcipriani"},
-            id_str: "1234567"
+            id_str: "1234567",
+            entities: {
+                "urls": [],
+                "user_mentions": [
+                {
+                    "indices": [0,13],
+                    "id_str": "76140129",
+                    "id": 76140129,
+                    "name": "Testando 1, 2, 3",
+                    "screen_name": "testando_123"
+                }
+                ],
+                "symbols": [],
+                "hashtags": []
+            }
         };
         var result = tweetParser.parse(tweet);
 

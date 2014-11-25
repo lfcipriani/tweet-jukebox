@@ -13,11 +13,9 @@ var TweetRequest = function(type, via, fromUser, tweetId, param) {
 }
 
 var spaceIt = function(str, startIndex, endIndex) {
-    var indexSliceBegin = (startIndex == 0 ? 0 : startIndex - 1);
-    var indexSliceEnd = (endIndex == str.length -1 ? str.length - 1 : endIndex + 1);
-    return str.slice(0,indexSliceBegin) +
-        + _.str.repeat(" ", endIndex - startIndex)
-        + text.slice(indexSliceEnd, str.length - 1);
+    return str.slice(0, startIndex) 
+        + _.str.repeat(" ", endIndex - startIndex) 
+        + str.slice(endIndex, str.length);
 }
 
 var parseUtil = {
@@ -91,25 +89,25 @@ var parseUtil = {
             }
         }
 
-        if (tweet["entities"] && tweet["entities"]["mentions"]) {
-            var mentions = tweet["entities"]["mentions"];
+        if (tweet["entities"] && tweet["entities"]["user_mentions"]) {
+            var mentions = tweet["entities"]["user_mentions"];
             for (var i = 0; i < mentions.length; i++) {
                 text = spaceIt(text, mentions[i]["indices"][0], mentions[i]["indices"][1]); 
             }
         }
 
-        _.str.clean(text);
+        text = _.str.clean(text);
         text = text.replace("#", ""); 
 
         // building search
         var terms = text.split(/\bby\b/);
-        var any = terms[0].match(/^\s(?:play\s)?(.*)/);
+        var any = terms[0].match(/^(?:play\s)?(.*)/);
         var query = {};
         if (any && any[1] != "") {
-            query["any"] = [any[1]]; 
+            query["any"] = any[1]; 
         } 
         if (terms.length > 1) {
-            query["artist"] = terms[1];
+            query["artist"] = terms[1].trim();
         }
 
         if (_.isEmpty(query)) { query = null }
@@ -124,6 +122,10 @@ var parseUtil = {
 };
 
 module.exports = {
+    replaceWithSpaces: function(str, startIndex, endIndex) {
+        return spaceIt(str, startIndex, endIndex);
+    },
+
     parse: function(tweet) {
         var type = null;
         var param = null;
