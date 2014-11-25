@@ -24,7 +24,6 @@ mopidy.on("event:trackPlaybackStarted", function (data) {
     console.log("NOW PLAYING: "+JSON.stringify(data));
 });
 
-//event:trackPlaybackStarted
 //event:playbackStateChanged { old_state: 'stopped', new_state: 'playing' }
 mopidy.on("event:trackPlaybackEnded", function (data) {
     var lastTrack = data;

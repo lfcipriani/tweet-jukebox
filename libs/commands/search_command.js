@@ -1,13 +1,26 @@
 'use strict';
 
 var _ = require('underscore');
+var Twitter = require('../twitter_post');
 
 module.exports = function(musicController, cmd) {
 
     var mopidy = musicController.getMopidyObj();
 
+    function success(request) {
+        if (cmd.post_reply_on_success) {
+            Twitter.reply("status1", request);
+        }
+    }
+
+    function error(request) {
+        if (cmd.post_reply_on_error) {
+            Twitter.reply("status2", request);
+        }
+    }
+
     return {
-        run: function(request, success, error) {
+        run: function(request) {
 
             mopidy.library.search(request.param).then(function(data) {
                 var resultTracks = [];
@@ -32,10 +45,10 @@ module.exports = function(musicController, cmd) {
                                 musicController.play();
                             }
                         });
-                        success();
+                        success(request);
                     });
                 } else {
-                    error();
+                    error(request);
                 } 
             });
 
