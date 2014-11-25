@@ -3,7 +3,8 @@
 var config = require('./config');
 var Stream = require('./libs/' + config.twitter.capture_strategy + '_strategy');
 var TwitterParser = require('./libs/twitter_parser');
-var Music = require('./libs/mopidy');
+var Music = require('./libs/music_controller');
+var Commands = require('./libs/commands')(Music);
 
 Stream.init();
 
@@ -13,22 +14,11 @@ Stream.onTweet(function(tweet) {
     console.log("Tweet: "+tweet.text);
     if (request) {
         console.log("Request from @"+ request.fromUser +": " + request.type + " " + JSON.stringify(request.param));
-        if (request.type == "SEARCH") {
-            var music = Music.search(request.param, function(m) {
-                if (m) {
-                    console.log("Music: " + m.name + "\n("+JSON.stringify(m)+")" );
-                    Music.add(m.uri, function() {
-                        Music.getPlayerState(function(state){
-                            if (state != "playing") {
-                                Music.play();
-                            }
-                        });
-                    });
-                } else {
-                    console.log("Didn't find a music...");
-                }
-            });
-        }
+
+        Commands.getCommand(request.type).run(request, 
+            function(){ console.log("cmd success") }, 
+            function(){ console.log("cmd error") }
+        );
     }
 });
 
