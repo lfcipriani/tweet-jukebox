@@ -39,6 +39,9 @@ mopidy.on("event:trackPlaybackEnded", function (data) {
 
 module.exports = {
     isOnline: mopidyOnline,
+    getMopidyObj: function(){
+        return mopidy;
+    },
 
     play: function() {
         mopidy.playback.play();
