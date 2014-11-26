@@ -42,7 +42,7 @@ mopidy.on("event:trackPlaybackStarted", function (data) {
     console.log("NOW PLAYING: "+JSON.stringify(data));
     if (config.music.now_playing_tweets_enabled) {
         Twitter.update({ 
-            "status": "#nowplaying " + data.tl_track.track.name.slice(0,102) + " " + Track.getUrl(data.tl_track.track)
+            "status": "#NowPlaying " + data.tl_track.track.name.slice(0,102) + " " + Track.getUrl(data.tl_track.track)
         });
     }
 });
