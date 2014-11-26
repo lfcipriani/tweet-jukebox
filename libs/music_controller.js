@@ -2,6 +2,8 @@
 
 var config = require('../config');
 var Mopidy = require('mopidy');
+var Twitter = require('./twitter_post');
+var Track = require('./track_urls');
 var _ = require('underscore');
 _.str = require('underscore.string');
 
@@ -11,9 +13,17 @@ var mopidy = new Mopidy({
 });
 
 var mopidyOnline = false;
+var currentTrackId = 0;
 
 mopidy.on("state:online", function () {
     mopidyOnline = true; 
+    mopidy.playback.getCurrentTlTrack({}).then(function(data){
+        console.log("Mopidy Online");
+        if (data) {
+            currentTrackId = data.tlid;
+            console.log("Current track: " + JSON.stringify(data));
+        }
+    });
 });
 
 mopidy.on("state:offline", function () {
@@ -21,7 +31,13 @@ mopidy.on("state:offline", function () {
 });
 
 mopidy.on("event:trackPlaybackStarted", function (data) {
+    currentTrackId = data.tl_track.tlid;
     console.log("NOW PLAYING: "+JSON.stringify(data));
+    if (config.music.now_playing_tweets_enabled) {
+        Twitter.update({ 
+            "status": "#nowplaying " + data.tl_track.track.name.slice(0,102) + " " + Track.getUrl(data.tl_track.track)
+        });
+    }
 });
 
 mopidy.on("event:trackPlaybackEnded", function (data) {
@@ -37,6 +53,9 @@ mopidy.on("event:trackPlaybackEnded", function (data) {
 
 module.exports = {
     isOnline: mopidyOnline,
+    getCurrentTrackId: function(){
+        return currentTrackId;
+    },
     getMopidyObj: function(){
         return mopidy;
     },
