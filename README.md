@@ -1,6 +1,8 @@
 tweet-jukebox
 =============
 
+[![Build Status](https://travis-ci.org/lfcipriani/tweet-jukebox.svg?branch=master)](https://travis-ci.org/lfcipriani/tweet-jukebox)
+
 A jukebox powered by tweets.
 
 ## Resources needed
