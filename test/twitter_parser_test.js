@@ -45,7 +45,8 @@ describe('libs/twitter_parser', function(){
         var result = tweetParser.parse(tweet);
 
         assert.equal(result.type, "link");
-        assert.equal(result.param["youtube"], "wZZ7oFKsKzY");
+        assert.equal(result.param.source, "youtube");
+        assert.equal(result.param.uri_part, "wZZ7oFKsKzY");
         assert.equal(result.via, "tweet");        
     });
 
@@ -69,7 +70,8 @@ describe('libs/twitter_parser', function(){
         var result = tweetParser.parse(tweet);
 
         assert.equal(result.type, "link");
-        assert.equal(result.param["spotify"], "4v0tapCyBcdyEbIpd1zZGU");
+        assert.equal(result.param.source, "spotify");
+        assert.equal(result.param.uri_part, "4v0tapCyBcdyEbIpd1zZGU");
         assert.equal(result.via, "tweet");        
     });
 
@@ -93,7 +95,8 @@ describe('libs/twitter_parser', function(){
         var result = tweetParser.parse(tweet);
 
         assert.equal(result.type, "link");
-        assert.equal(result.param["soundcloud"], "lfcipriani/beastie-boys-i-dontt-know");
+        assert.equal(result.param.source, "soundcloud");
+        assert.equal(result.param.uri_part, "lfcipriani/beastie-boys-i-dontt-know");
         assert.equal(result.via, "tweet");        
     });
 
@@ -135,8 +138,8 @@ describe('libs/twitter_parser', function(){
         var result = tweetParser.parse(tweet);
 
         assert.equal(result.type, "search");
-        assert.notEqual(result.param["query"]["any"].indexOf("like a virgin"), -1);
-        assert.notEqual(result.param["query"]["artist"].indexOf("madonna"), -1);
+        assert.notEqual(result.param["query"]["any"][0].indexOf("like a virgin"), -1);
+        assert.notEqual(result.param["query"]["artist"][0].indexOf("madonna"), -1);
         assert.equal(result.via, "tweet");        
 
         tweet = {
@@ -161,7 +164,7 @@ describe('libs/twitter_parser', function(){
         var result = tweetParser.parse(tweet);
 
         assert.equal(result.type, "search");
-        assert.notEqual(result.param["query"]["any"].indexOf("like a virgin"), -1);
+        assert.notEqual(result.param["query"]["any"][0].indexOf("like a virgin"), -1);
         assert.equal(result.param["query"]["artist"], undefined);
         assert.equal(result.via, "tweet");        
 

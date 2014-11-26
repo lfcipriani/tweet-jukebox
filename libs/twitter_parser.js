@@ -40,7 +40,7 @@ var parseUtil = {
                 var result = urlList[u].expanded_url.match(re);
                 result = _.reject(result, function(v) {return v == undefined;})
                 if (result.length > 1) {
-                    return {"spotify": result[1]};
+                    return {source: "spotify", "uri_part": result[1]};
                 }
 
                 // YOUTUBE
@@ -49,7 +49,7 @@ var parseUtil = {
                 var result = urlList[u].expanded_url.match(re);
                 result = _.reject(result, function(v) {return v == undefined;})
                 if (result.length > 1) {
-                    return {"youtube": result[1]};
+                    return {source: "youtube", "uri_part": result[1]};
                 }
 
                 // SOUNDCLOUD
@@ -58,7 +58,7 @@ var parseUtil = {
                 var result = urlList[u].expanded_url.match(re);
                 result = _.reject(result, function(v) {return v == undefined;})
                 if (result.length > 1) {
-                    return {"soundcloud": result[1] + "/" + result[2]};
+                    return {source: "soundcloud", "uri_part": result[1] + "/" + result[2]};
                 }
             }
         }
@@ -104,10 +104,10 @@ var parseUtil = {
         var any = terms[0].match(/^(?:play\s)?(.*)/i);
         var query = {};
         if (any && any[1] != "") {
-            query["any"] = any[1]; 
+            query["any"] = [any[1]]; 
         } 
         if (terms.length > 1) {
-            query["artist"] = terms[1].trim();
+            query["artist"] = [terms[1].trim()];
         }
 
         if (_.isEmpty(query)) { query = null }
