@@ -2,20 +2,21 @@
 
 var _ = require('underscore');
 var Twitter = require('../twitter_post');
+var Track = require('../track_urls');
 
 module.exports = function(musicController, cmd) {
 
     var mopidy = musicController.getMopidyObj();
 
-    function success(request) {
+    function success(request, data) {
         if (cmd.post_reply_on_success) {
-            Twitter.reply("status1", request);
+            Twitter.reply("Thanks! Will be playing " + Track.getUrl(data[0].track) + " soon", request);
         }
     }
 
     function error(request) {
         if (cmd.post_reply_on_error) {
-            Twitter.reply("status2", request);
+            Twitter.reply("Sorry! Not able to find music.", request);
         }
     }
 
@@ -39,13 +40,13 @@ module.exports = function(musicController, cmd) {
 
                 if (resultTracks.length > 0) {
                     console.log("Music: " + resultTracks[0].name);
-                    musicController.add(resultTracks[0].uri, function() {
+                    musicController.add(resultTracks[0].uri, function(data) {
                         musicController.getPlayerState(function(state){
                             if (state != "playing") {
                                 musicController.play();
                             }
                         });
-                        success(request);
+                        success(request, data);
                     });
                 } else {
                     error(request);

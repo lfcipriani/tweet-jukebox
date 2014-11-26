@@ -62,7 +62,7 @@ module.exports = {
         mopidy.tracklist.add({"tracks": null, "at_position": null, "uri": uri}).then(function(data){
             if (data.length > 0) {
                 console.log("Music added");
-                callback();
+                callback(data);
             } 
         });
     },
