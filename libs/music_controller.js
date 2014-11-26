@@ -14,6 +14,7 @@ var mopidy = new Mopidy({
 
 var mopidyOnline = false;
 var currentTrackId = 0;
+var lastTrackIdAdded = null;
 
 mopidy.on("state:online", function () {
     mopidyOnline = true; 
@@ -24,10 +25,16 @@ mopidy.on("state:online", function () {
             console.log("Current track: " + JSON.stringify(data));
         }
     });
+    mopidy.tracklist.getTlTracks({}).then(function(data){
+        if (data.length > 0) {
+            lastTrackIdAdded = data[data.length - 1].tlid
+            console.log("Last added track: " + JSON.stringify(data[data.length - 1]));
+        }
+    });
 });
 
 mopidy.on("state:offline", function () {
-    mopidyOnline = true; 
+    mopidyOnline = false; 
 });
 
 mopidy.on("event:trackPlaybackStarted", function (data) {
@@ -42,13 +49,10 @@ mopidy.on("event:trackPlaybackStarted", function (data) {
 
 mopidy.on("event:trackPlaybackEnded", function (data) {
     var lastTrack = data;
-    mopidy.tracklist.getLength().then(function(data) {
-        // are we on the last track of tracklist?
-        if ((data - 1) == lastTrack.tl_track.tlid) {
-            mopidy.tracklist.clear();
-            console.log("cleaning playlist");
-        }
-    });
+    if (data.tl_track.tlid == lastTrackIdAdded) {
+        mopidy.tracklist.clear();
+        console.log("cleaning playlist");
+    }
 });
 
 module.exports = {
@@ -80,6 +84,7 @@ module.exports = {
         var that = this;
         mopidy.tracklist.add({"tracks": null, "at_position": null, "uri": uri}).then(function(data){
             if (data.length > 0) {
+                lastTrackIdAdded = data[0].tlid;
                 console.log("Music added");
                 that.getPlayerState(function(state){
                     if (state != "playing") {
