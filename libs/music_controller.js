@@ -24,14 +24,13 @@ mopidy.on("event:trackPlaybackStarted", function (data) {
     console.log("NOW PLAYING: "+JSON.stringify(data));
 });
 
-//event:playbackStateChanged { old_state: 'stopped', new_state: 'playing' }
 mopidy.on("event:trackPlaybackEnded", function (data) {
     var lastTrack = data;
     mopidy.tracklist.getLength().then(function(data) {
-        console.log("Length: "+data+" - "+lastTrack.tl_track.tlid);
+        // are we on the last track of tracklist?
         if ((data - 1) == lastTrack.tl_track.tlid) {
-            console.log("cleaning playlist");
             mopidy.tracklist.clear();
+            console.log("cleaning playlist");
         }
     });
 });
@@ -59,36 +58,18 @@ module.exports = {
     },
 
     add: function(uri, callback) {
+        var that = this;
         mopidy.tracklist.add({"tracks": null, "at_position": null, "uri": uri}).then(function(data){
             if (data.length > 0) {
                 console.log("Music added");
+                that.getPlayerState(function(state){
+                    if (state != "playing") {
+                        that.play();
+                    }
+                });
                 callback(data);
             } 
         });
-    },
-
-    search: function(query, callback) {
-        mopidy.library.search(query).then(function(data) {
-            var resultTracks = [];
-
-            _.each(["spotify", "youtube", "soundcloud"], function(source){
-                _.each(data, function(result) {
-                    if (_.str.startsWith(result.uri, source)) {
-                        if (result.tracks) {
-                            _.each(result.tracks, function(t) {
-                                resultTracks.push(t);
-                            });
-                        }
-                    }
-                });
-            });
-
-            if (resultTracks.length > 0) {
-                callback(resultTracks[0]);
-            } else {
-                callback(null);
-            } 
-        }); 
     },
 
     getPlayerState: function(callback) {
@@ -99,8 +80,6 @@ module.exports = {
     }
 };
 
-// tracklist.get_length 
-// playback.get_current_tl_track
+// ref.
 // tracklist.next_track
-// core.playback.get_state, stopped, paused, playing on result
-
+// event:playbackStateChanged { old_state: 'stopped', new_state: 'playing' }
