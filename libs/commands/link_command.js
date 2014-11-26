@@ -23,11 +23,6 @@ module.exports = function(musicController, cmd) {
     function addMusic(request, track) {
         console.log("Music: " + track.name);
         musicController.add(track.uri, function(data) {
-            musicController.getPlayerState(function(state){
-                if (state != "playing") {
-                    musicController.play();
-                }
-            });
             success(request, track);
         });
     }
