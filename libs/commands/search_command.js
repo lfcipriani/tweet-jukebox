@@ -10,7 +10,16 @@ module.exports = function(musicController, cmd) {
 
     function success(request, data) {
         if (cmd.post_reply_on_success) {
-            Twitter.reply("Thanks! Will be playing " + Track.getUrl(data[0].track) + " soon", request);
+            var next = data[0].tlid - musicController.getCurrentTrackId();
+            var msg = null;
+            if (musicController.getCurrentTrackId() == 0 || next == 0) {
+                msg = "Playing " + Track.getUrl(data[0].track) + " right now";
+            } else if (next == 1) {
+                msg = "Next song will be " + Track.getUrl(data[0].track);
+            } else {
+                msg = "Will play " + Track.getUrl(data[0].track) + " after the next " + next + " songs";
+            }
+            Twitter.reply("Thanks! " + msg , request);
         }
     }
 
