@@ -16,7 +16,7 @@ describe('libs/twitter_parser', function(){
 
         var result = tweetParser.parse(tweet);
 
-        assert.equal(result.type, "TOKEN");
+        assert.equal(result.type, "token");
         assert.equal(result.param, "1234");
         assert.equal(result.via, "tweet");        
     });
@@ -44,7 +44,7 @@ describe('libs/twitter_parser', function(){
 
         var result = tweetParser.parse(tweet);
 
-        assert.equal(result.type, "LINK");
+        assert.equal(result.type, "link");
         assert.equal(result.param["youtube"], "wZZ7oFKsKzY");
         assert.equal(result.via, "tweet");        
     });
@@ -68,7 +68,7 @@ describe('libs/twitter_parser', function(){
 
         var result = tweetParser.parse(tweet);
 
-        assert.equal(result.type, "LINK");
+        assert.equal(result.type, "link");
         assert.equal(result.param["spotify"], "4v0tapCyBcdyEbIpd1zZGU");
         assert.equal(result.via, "tweet");        
     });
@@ -92,7 +92,7 @@ describe('libs/twitter_parser', function(){
 
         var result = tweetParser.parse(tweet);
 
-        assert.equal(result.type, "LINK");
+        assert.equal(result.type, "link");
         assert.equal(result.param["soundcloud"], "lfcipriani/beastie-boys-i-dontt-know");
         assert.equal(result.via, "tweet");        
     });
@@ -134,7 +134,7 @@ describe('libs/twitter_parser', function(){
         };
         var result = tweetParser.parse(tweet);
 
-        assert.equal(result.type, "SEARCH");
+        assert.equal(result.type, "search");
         assert.notEqual(result.param["query"]["any"].indexOf("like a virgin"), -1);
         assert.notEqual(result.param["query"]["artist"].indexOf("madonna"), -1);
         assert.equal(result.via, "tweet");        
@@ -160,7 +160,7 @@ describe('libs/twitter_parser', function(){
         };
         var result = tweetParser.parse(tweet);
 
-        assert.equal(result.type, "SEARCH");
+        assert.equal(result.type, "search");
         assert.notEqual(result.param["query"]["any"].indexOf("like a virgin"), -1);
         assert.equal(result.param["query"]["artist"], undefined);
         assert.equal(result.via, "tweet");        
@@ -186,7 +186,7 @@ describe('libs/twitter_parser', function(){
         };
         var result = tweetParser.parse(tweet);
 
-        assert.equal(result.type, "SEARCH");
+        assert.equal(result.type, "search");
         assert.equal(result.param["query"]["any"], undefined);
         assert.notEqual(result.param["query"]["artist"].indexOf("madonna"), -1);
         assert.equal(result.via, "tweet");        
@@ -224,7 +224,7 @@ describe('libs/twitter_parser', function(){
 
         var result = tweetParser.parse(tweet);
 
-        assert.equal(result.type, "SEARCH");
+        assert.equal(result.type, "search");
         assert.notEqual(result.param["uris"][0].indexOf("youtube"), -1);
         assert.equal(result.via, "tweet");        
 
@@ -267,7 +267,7 @@ describe('libs/twitter_parser', function(){
         };
         var result = tweetParser.parse(tweet);
 
-        assert.equal(result.type, "SEARCH");
+        assert.equal(result.type, "search");
         assert.notEqual(result.param["uris"][0].indexOf("youtube"), -1);
         assert.equal(result.param["uris"].length, 2);
         assert.equal(result.via, "tweet");        
@@ -318,9 +318,9 @@ describe('libs/twitter_parser', function(){
 
         var result = tweetParser.parse(dm);
 
-        assert.equal(result.type, "HASHCOMMAND");
-        assert.equal(result.param["ban"][0], "lfcipriani");
-        assert.equal(result.param["ban"][1], "twitterapi");
+        assert.equal(result.type, "ban");
+        assert.equal(result.param.param[0], "lfcipriani");
+        assert.equal(result.param.param[1], "twitterapi");
         assert.equal(result.via, "dm");
     });
 
@@ -341,8 +341,8 @@ describe('libs/twitter_parser', function(){
 
         var result = tweetParser.parse(dm);
 
-        assert.equal(result.type, "HASHCOMMAND");
-        assert.equal(result.param["play"], null);
+        assert.equal(result.type, "play");
+        assert.equal(result.param.param, null);
     });
 
     it('should not accept an invalid command', function() {

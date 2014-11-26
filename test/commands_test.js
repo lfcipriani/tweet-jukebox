@@ -15,7 +15,7 @@ describe('libs/commands', function(){
     });
 
     it('should return the right command for an enabled command', function() {
-        assert.notEqual(Commands.getCommand("SEARCH"), undefined);
+        assert.notEqual(Commands.getCommand("search"), undefined);
     });
 
     it('should not return a non existent command', function() {
@@ -23,7 +23,7 @@ describe('libs/commands', function(){
     });
 
     it('should have a run method', function() {
-        assert.notEqual(Commands.getCommand("SEARCH").run, undefined);
+        assert.notEqual(Commands.getCommand("search").run, undefined);
     });
 
   });

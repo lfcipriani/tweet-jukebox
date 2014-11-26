@@ -124,7 +124,8 @@ var parseUtil = {
         var result = str.match(/^#(\S+)\s?(\S+)?/i);
         if (result) {
             var obj = {};
-            obj[result[1]] = (result[2] ? result[2].split(",") : null);
+            obj.cmd = result[1];
+            obj.param = (result[2] ? result[2].split(",") : null);
             return obj;
         } else {
             return null;
@@ -152,7 +153,7 @@ module.exports = {
 
             param = parseUtil.extractHashCommand(tweet.direct_message.text);
             if (param) {
-                type = "HASHCOMMAND";
+                type = param.cmd; 
             } else {
                 return null;
             }
@@ -166,14 +167,14 @@ module.exports = {
             // checking if this is a token user verification 
             param = parseUtil.extractToken(tweet);
             if (param) {
-                type = "TOKEN";
+                type = "token";
             }
 
             // checking if user want to play an URL
             if (!type) {
                 param = parseUtil.extractUrl(tweet);
                 if (param) {
-                    type = "LINK";
+                    type = "link";
                 }
             }
 
@@ -181,7 +182,7 @@ module.exports = {
             if (!type) {
                 param = parseUtil.extractSearch(tweet);
                 if (param) {
-                    type = "SEARCH";
+                    type = "search";
                 } else {
                     return null;
                 }

@@ -9,7 +9,7 @@ module.exports = function(musicController) {
     var ENABLED_COMMANDS = {};
     _.each(config.commands, function(cmd) {
         if (cmd.enabled) {
-            ENABLED_COMMANDS[_.str.swapCase(cmd.name)] = require('./commands/'+ cmd.name +'_command')(musicController, cmd);
+            ENABLED_COMMANDS[cmd.name] = require('./commands/'+ cmd.name +'_command')(musicController, cmd);
         }
     });
 
