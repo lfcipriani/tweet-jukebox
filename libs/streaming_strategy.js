@@ -29,7 +29,7 @@ module.exports = {
     onDM: function(callback) {
         var that = this;
         userStream.on('direct_message', function(directMsg) {
-            if (validDm(directMsg)) {
+            if (that.validDm(directMsg)) {
                 callback(directMsg);
             }
         });
