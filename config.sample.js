@@ -15,9 +15,19 @@ module.exports = {
         admins: ["EDIT"],
         // captureStrategy: only streaming supported, will support rest in the future
         capture_strategy: "streaming"
+        // for development purposes, avoid rate limiting
+        deactivate_all_statuses_updates: false
     },
-    security: {
-        token_verification_enabled: true
-    }
+    music: {
+        now_playing_tweets_enabled: true
+    },
+    commands: [
+        { name: "search", enabled: true, post_reply_on_success: true, post_reply_on_error: false },
+        { name: "link", enabled: true, post_reply_on_success: true, post_reply_on_error: false },
+        { name: "play", enabled: true, post_reply_on_success: false, post_reply_on_error: false },
+        { name: "pause", enabled: true, post_reply_on_success: false, post_reply_on_error: false },
+        { name: "next", enabled: true, post_reply_on_success: false, post_reply_on_error: false },
+        { name: "clear", enabled: true, post_reply_on_success: false, post_reply_on_error: false }
+    ]
 }
 
