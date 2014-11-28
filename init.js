@@ -33,3 +33,8 @@ function execute(entity) {
         logger.error("Not able to understand the request: " + JSON.stringify(entity));
     }
 }
+
+process.on('SIGINT', function () {
+  logger.info('Exiting...');
+  process.exit(0);
+});
