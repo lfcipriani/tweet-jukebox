@@ -3,6 +3,7 @@
 var _ = require('underscore');
 var Twitter = require('../twitter_post');
 var Track = require('../track_urls');
+var logger = require('../../logger');
 
 module.exports = function(musicController, cmd) {
 
@@ -32,6 +33,7 @@ module.exports = function(musicController, cmd) {
     return {
         run: function(request) {
 
+            // TODO: avoid accented chars when using soundcloud
             mopidy.library.search(request.param).then(function(data) {
                 var resultTracks = [];
 
@@ -48,7 +50,7 @@ module.exports = function(musicController, cmd) {
                 });
 
                 if (resultTracks.length > 0) {
-                    console.log("Music: " + resultTracks[0].name);
+                    logger.info("Music: " + resultTracks[0].name);
                     musicController.add(resultTracks[0].uri, function(data) {
                         success(request, data);
                     });

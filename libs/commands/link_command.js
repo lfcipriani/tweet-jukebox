@@ -3,6 +3,7 @@
 var _ = require('underscore');
 var Twitter = require('../twitter_post');
 var Track = require('../track_urls');
+var logger = require('../../logger');
 
 module.exports = function(musicController, cmd) {
 
@@ -30,7 +31,7 @@ module.exports = function(musicController, cmd) {
     }
 
     function addMusic(request, track) {
-        console.log("Music: " + track.name);
+        logger.info("Music: " + track.name);
         musicController.add(track.uri, function(data) {
             success(request, data);
         });

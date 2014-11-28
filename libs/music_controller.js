@@ -1,6 +1,7 @@
 'use strict';
 
 var config = require('../config');
+var logger = require('../logger');
 var Mopidy = require('mopidy');
 var Twitter = require('./twitter_post');
 var Track = require('./track_urls');
@@ -19,16 +20,16 @@ var lastTrackIdAdded = null;
 mopidy.on("state:online", function () {
     mopidyOnline = true; 
     mopidy.playback.getCurrentTlTrack({}).then(function(data){
-        console.log("Mopidy Online");
+        logger.info("Mopidy Online");
         if (data) {
             currentTrackId = data.tlid;
-            console.log("Current track: " + JSON.stringify(data));
+            logger.info("Current track: " + JSON.stringify(data));
         }
     });
     mopidy.tracklist.getTlTracks({}).then(function(data){
         if (data.length > 0) {
             lastTrackIdAdded = data[data.length - 1].tlid
-            console.log("Last added track: " + JSON.stringify(data[data.length - 1]));
+            logger.info("Last added track: " + JSON.stringify(data[data.length - 1]));
         }
     });
 });
@@ -39,7 +40,7 @@ mopidy.on("state:offline", function () {
 
 mopidy.on("event:trackPlaybackStarted", function (data) {
     currentTrackId = data.tl_track.tlid;
-    console.log("NOW PLAYING: "+JSON.stringify(data));
+    logger.info("NOW PLAYING: "+JSON.stringify(data));
     if (config.music.now_playing_tweets_enabled) {
         Twitter.update({ 
             "status": "#NowPlaying " + data.tl_track.track.name.slice(0,102) + " " + Track.getUrl(data.tl_track.track)
@@ -48,10 +49,11 @@ mopidy.on("event:trackPlaybackStarted", function (data) {
 });
 
 mopidy.on("event:trackPlaybackEnded", function (data) {
+    // TODO; improve how to track end of tracklist
     var lastTrack = data;
     if (data.tl_track.tlid == lastTrackIdAdded) {
         mopidy.tracklist.clear();
-        console.log("cleaning playlist");
+        logger.info("cleaning playlist");
     }
 });
 
@@ -85,7 +87,7 @@ module.exports = {
         mopidy.tracklist.add({"tracks": null, "at_position": null, "uri": uri}).then(function(data){
             if (data.length > 0) {
                 lastTrackIdAdded = data[0].tlid;
-                console.log("Music added");
+                logger.info("Music added");
                 that.getPlayerState(function(state){
                     if (state != "playing") {
                         that.play();
@@ -98,7 +100,7 @@ module.exports = {
 
     getPlayerState: function(callback) {
         mopidy.playback.getState().then(function(data){
-            console.log("Player state: "+ data);
+            logger.info("Player state: "+ data);
             callback(data);
         });
     }

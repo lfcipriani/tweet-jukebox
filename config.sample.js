@@ -28,6 +28,8 @@ module.exports = {
         { name: "pause", enabled: true, post_reply_on_success: false, post_reply_on_error: false },
         { name: "next", enabled: true, post_reply_on_success: false, post_reply_on_error: false },
         { name: "clear", enabled: true, post_reply_on_success: false, post_reply_on_error: false }
-    ]
+    ],
+    log_level: "debug",
+    log_base_path: "./logs"
 }
 

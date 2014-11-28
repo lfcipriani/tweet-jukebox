@@ -20,7 +20,8 @@
     "underscore.string": "*",
     "request": "*",
     "mopidy": "*",
-    "lcd": "*"
+    "lcd": "*",
+    "winston": "*"
   },
   "devDependencies": {
     "mocha": "*"

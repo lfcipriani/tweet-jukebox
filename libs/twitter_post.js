@@ -1,6 +1,7 @@
 "use strict";
 
 var config = require('../config');
+var logger = require('../logger');
 var Twit = require('twit');
 
 var T = new Twit(config.twitter.api_keys);
@@ -18,11 +19,11 @@ module.exports = {
         if (!config.twitter.deactivate_all_statuses_updates) {
             T.post('statuses/update', param, function(err, data, response) {
                 if (err) {
-                    console.log("Error sending tweet: " + err.message);
+                    logger.error("Error sending tweet: " + err.message);
                 } 
             });
         } else {
-            console.log("Status update deactivated");
+            logger.warn("Status update deactivated");
         }
     }
 

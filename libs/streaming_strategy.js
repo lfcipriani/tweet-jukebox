@@ -1,6 +1,7 @@
 "use strict";
 
 var config = require('../config');
+var logger = require('../logger');
 var Twit = require('twit');
 
 var T = new Twit(config.twitter.api_keys);
@@ -22,7 +23,7 @@ module.exports = {
         });
 
         userStream.on('friends', function(friendsMsg) {
-            console.log("Friends received... Capturing replies...");
+            logger.info("Friends received... Capturing replies...");
         });
     },
 

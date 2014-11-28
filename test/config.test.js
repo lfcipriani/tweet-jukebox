@@ -16,7 +16,7 @@ module.exports = {
         // captureStrategy: only streaming supported, will support rest in the future
         capture_strategy: "streaming",
         // for development purposes, avoid rate limiting
-        deactivate_all_statuses_updates: false
+        deactivate_all_statuses_updates: true
     },
     security: {
         token_verification_enabled: true
@@ -24,6 +24,8 @@ module.exports = {
     commands: [
         { name: "search", enabled: true, post_reply_on_success: true, post_reply_on_error: false },
         { name: "link", enabled: false, post_reply_on_success: true, post_reply_on_error: false }
-    ]
+    ],
+    log_level: "info",
+    log_base_path: "./logs"
 }
 
