@@ -6,6 +6,7 @@ var Stream = require('./libs/' + config.twitter.capture_strategy + '_strategy');
 var TwitterParser = require('./libs/twitter_parser');
 var Music = require('./libs/music_controller');
 var Commands = require('./libs/commands')(Music);
+var Buttons = require('./libs/raspberrypi')(Music);
 
 Stream.init();
 

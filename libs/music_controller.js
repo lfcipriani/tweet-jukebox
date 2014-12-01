@@ -100,7 +100,7 @@ module.exports = {
 
     getPlayerState: function(callback) {
         mopidy.playback.getState().then(function(data){
-            logger.info("Player state: "+ data);
+            logger.debug("Player state: "+ data);
             callback(data);
         });
     }

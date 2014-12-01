@@ -21,6 +21,7 @@
     "request": "*",
     "mopidy": "*",
     "lcd": "*",
+    "onoff": "*",
     "winston": "*"
   },
   "devDependencies": {
