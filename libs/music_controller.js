@@ -36,6 +36,8 @@ mopidy.on("state:online", function () {
 
 mopidy.on("state:offline", function () {
     mopidyOnline = false; 
+    currentTrackId = 0;
+    lastTrackIdAdded = null;
 });
 
 mopidy.on("event:trackPlaybackStarted", function (data) {
