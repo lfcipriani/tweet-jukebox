@@ -7,13 +7,28 @@ var play       = new Gpio(18, 'in', "falling", { debounceTimeout: 200 });
 var skip       = new Gpio(23, 'in', "falling", { debounceTimeout: 200 });
 var volumeUp   = new Gpio(20, 'in', "falling", { debounceTimeout: 200 });
 var volumeDown = new Gpio(16, 'in', "falling", { debounceTimeout: 200 });
-var currentVolume = 100;
+var currentVolume = null;
+var increment = 5;
 
 module.exports = function(musicController) {
 
+    function getVolume(callback) {
+        if (currentVolume == null) {
+            musicController.playback.getVolume({}).then(function(data){
+                logger.debug("Current volume: "+ data);
+                if (currentVolume == null) {
+                    currentVolume = data;
+                }
+                callback(currentVolume);
+            });
+        } else {
+            callback(currentVolume);
+        }
+    }
+
     play.watch(function(err, value) {
         if (err) { 
-            logger.debug("Error when trying to push play");
+            logger.error("Error when trying to push play");
         } else if (value == 0) {
             logger.debug("Play pressed!");
             musicController.getPlayerState(function(state){
@@ -36,7 +51,7 @@ module.exports = function(musicController) {
 
     skip.watch(function(err, value) {
         if (err) { 
-            logger.debug("Error when trying to push skip");
+            logger.error("Error when trying to push skip");
         } else if (value == 0) {
             logger.debug("Skip pressed!");
             musicController.getPlayerState(function(state){
@@ -62,17 +77,23 @@ module.exports = function(musicController) {
 
     volumeUp.watch(function(err, value) {
         if (err) { 
-            logger.debug("Error when trying to push volume up");
+            logger.error("Error when trying to push volume up");
         } else if (value == 0) {
             logger.debug("Volume up pressed!");
+            getVolume(function(vol){
+                musicController.playback.setVolume({"volume":(vol+increment)});
+            });
         }
     });
 
     volumeDown.watch(function(err, value) {
         if (err) { 
-            logger.debug("Error when trying to push volume down");
+            logger.error("Error when trying to push volume down");
         } else if (value == 0) {
             logger.debug("Volume down pressed!");
+            getVolume(function(vol){
+                musicController.playback.setVolume({"volume":(vol-increment)});
+            });
         }
     });
 
