@@ -12,9 +12,9 @@ var increment = 5;
 
 module.exports = function(musicController) {
 
-    function getVolume(callback) {
+    var getVolume = function(callback) {
         if (currentVolume == null) {
-            musicController.playback.getVolume({}).then(function(data){
+            musicController.getMopidyObj().playback.getVolume({}).then(function(data){
                 logger.debug("Current volume: "+ data);
                 if (currentVolume == null) {
                     currentVolume = data;
@@ -80,8 +80,8 @@ module.exports = function(musicController) {
             logger.error("Error when trying to push volume up");
         } else if (value == 0) {
             logger.debug("Volume up pressed!");
-            this.getVolume(function(vol){
-                musicController.playback.setVolume({"volume":(vol+increment)});
+            getVolume(function(vol){
+                musicController.getMopidyObj().playback.setVolume({"volume":(vol+increment)});
             });
         }
     });
@@ -91,8 +91,8 @@ module.exports = function(musicController) {
             logger.error("Error when trying to push volume down");
         } else if (value == 0) {
             logger.debug("Volume down pressed!");
-            this.getVolume(function(vol){
-                musicController.playback.setVolume({"volume":(vol-increment)});
+            getVolume(function(vol){
+                musicController.getMopidyObj().playback.setVolume({"volume":(vol-increment)});
             });
         }
     });
