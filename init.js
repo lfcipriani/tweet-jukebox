@@ -2,6 +2,7 @@
 
 var config = require('./config');
 var logger = require('./logger');
+var Lcd    = require('./libs/raspberrypi/lcd_controller');
 var Stream = require('./libs/' + config.twitter.capture_strategy + '_strategy');
 var TwitterParser = require('./libs/twitter_parser');
 var Music = require('./libs/music_controller');
@@ -12,6 +13,7 @@ Stream.init();
 
 Stream.onTweet(function(tweet) {
     logger.info("Tweet: " + tweet.text);
+    Lcd.setLine(0,tweet.text);
     execute(tweet);
 });
 
@@ -21,6 +23,7 @@ Stream.onDM(function(dm) {
 });
 
 function execute(entity) {
+    Lcd.setLine(1,"executing");
     var request = TwitterParser.parse(entity);
     if (request) {
         logger.info("Request: " + JSON.stringify(request));
