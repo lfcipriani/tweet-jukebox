@@ -22,9 +22,10 @@ module.exports = function(musicController) {
                 callback(currentVolume);
             });
         } else {
+            logger.debug("Current volume: "+ currentVolume);
             callback(currentVolume);
         }
-    }
+    };
 
     play.watch(function(err, value) {
         if (err) { 
@@ -81,7 +82,8 @@ module.exports = function(musicController) {
         } else if (value == 0) {
             logger.debug("Volume up pressed!");
             getVolume(function(vol){
-                musicController.getMopidyObj().playback.setVolume({"volume":(vol+increment)});
+                currentVolume = (vol + increment > 100 ? 100 ; vol + increment);
+                musicController.getMopidyObj().playback.setVolume({"volume":currentVolume});
             });
         }
     });
@@ -92,7 +94,8 @@ module.exports = function(musicController) {
         } else if (value == 0) {
             logger.debug("Volume down pressed!");
             getVolume(function(vol){
-                musicController.getMopidyObj().playback.setVolume({"volume":(vol-increment)});
+                currentVolume = (vol - increment < 0 ? 0 ; vol - increment);
+                musicController.getMopidyObj().playback.setVolume({"volume":currentVolume});
             });
         }
     });
