@@ -97,14 +97,19 @@ var parseUtil = {
         }
 
         text = _.str.clean(text);
-        // removing special chars because soundcloud plugin has an encoding bug
+        text = _.str.unescapeHTML(text);
         text = _.str.slugify(text).replace(/-/g," ");
 
         // building search
+        var terms = text.split(/\bby\b/i);
+        var any = terms[0];
         var query = {};
-        if (text.length > 0) {
-            query["any"] = [text]; 
+        if (any && any != "") {
+            query["any"] = [any]; 
         } 
+        if (terms.length > 1) {
+            query["artist"] = [terms[1].trim()];
+        }
 
         if (_.isEmpty(query)) { query = null }
         if (_.isEmpty(uris)) { uris = null }

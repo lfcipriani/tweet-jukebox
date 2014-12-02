@@ -138,13 +138,12 @@ describe('libs/twitter_parser', function(){
         var result = tweetParser.parse(tweet);
 
         assert.equal(result.type, "search");
-        assert.notEqual(result.param["query"]["any"][0].indexOf("like a virgin by madonna"), -1);
-        assert.equal(result.param["query"]["artist"], undefined);
-        //assert.equal(result.param["query"]["artist"][0].indexOf("madonna"), -1);
+        assert.notEqual(result.param["query"]["any"][0].indexOf("like a virgin"), -1);
+        assert.notEqual(result.param["query"]["artist"][0].indexOf("madonna"), -1);
         assert.equal(result.via, "tweet");        
 
         tweet = {
-            text: "@" + config.twitter.jukebox + " play like a virgin",
+            text: "@" + config.twitter.jukebox + " like a virgin",
             user: { screen_name: "lfcipriani"},
             id_str: "1234567",
             entities: {
@@ -165,12 +164,12 @@ describe('libs/twitter_parser', function(){
         var result = tweetParser.parse(tweet);
 
         assert.equal(result.type, "search");
-        assert.notEqual(result.param["query"]["any"][0].indexOf("play like a virgin"), -1);
+        assert.notEqual(result.param["query"]["any"][0].indexOf("like a virgin"), -1);
         assert.equal(result.param["query"]["artist"], undefined);
         assert.equal(result.via, "tweet");        
 
         tweet = {
-            text: "@" + config.twitter.jukebox + " play by madonna",
+            text: "@" + config.twitter.jukebox + " by madonna",
             user: { screen_name: "lfcipriani"},
             id_str: "1234567",
             entities: {
@@ -191,8 +190,8 @@ describe('libs/twitter_parser', function(){
         var result = tweetParser.parse(tweet);
 
         assert.equal(result.type, "search");
-        assert.equal(result.param["query"]["any"], "play by madonna");
-        assert.equal(result.param["query"]["artist"], undefined);
+        assert.equal(result.param["query"]["any"], undefined);
+        assert.notEqual(result.param["query"]["artist"].indexOf("madonna"), -1);
         assert.equal(result.via, "tweet");        
 
         tweet = {
