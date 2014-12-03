@@ -8,6 +8,10 @@ _.str = require('underscore.string');
 if (config.hardware.lcd.enabled) {
 
     var Lcd = require('lcd');
+    var Gpio = require('onoff').Gpio;
+
+    var lcdLight = new Gpio(25, 'out');
+    lcdLight.writeSync(1);
 
     var lcd = new Lcd({
         rs: 12,
@@ -95,6 +99,8 @@ if (config.hardware.lcd.enabled) {
     process.on('SIGINT', function() {
     if (loop) { clearTimeout(loop) }
     if (alertLoop) { clearTimeout(alertLoop) }
+    lcdLight.writeSync(0);
+    lcdLight.unexport();
     logger.info("Closing LCD resources...");
     lcd.clear();
     lcd.close();
