@@ -2,6 +2,7 @@
 
 var config = require('../config');
 var logger = require('../logger');
+var Lcd    = require('./' + config.hardware.lcd.lib);
 var Mopidy = require('mopidy');
 var Twitter = require('./twitter_post');
 var Track = require('./track_urls');
@@ -43,6 +44,7 @@ mopidy.on("state:offline", function () {
 mopidy.on("event:trackPlaybackStarted", function (data) {
     currentTrackId = data.tl_track.tlid;
     logger.info("NOW PLAYING: "+JSON.stringify(data));
+    Lcd.setLine(0,"#NowPlaying " + data.tl_track.track.name);
     if (config.music.now_playing_tweets_enabled) {
         Twitter.update({ 
             "status": "#NowPlaying " + data.tl_track.track.name.slice(0,102) + " " + Track.getUrl(data.tl_track.track)

@@ -13,7 +13,7 @@ Stream.init();
 
 Stream.onTweet(function(tweet) {
     logger.info("Tweet: " + tweet.text);
-    Lcd.setLine(0,tweet.text);
+    Lcd.alertLine(0,"Got tweet!",1000);
     execute(tweet);
 });
 
@@ -23,7 +23,6 @@ Stream.onDM(function(dm) {
 });
 
 function execute(entity) {
-    Lcd.setLine(1,"executing");
     var request = TwitterParser.parse(entity);
     if (request) {
         logger.info("Request: " + JSON.stringify(request));
@@ -37,6 +36,8 @@ function execute(entity) {
         logger.error("Not able to understand the request: " + JSON.stringify(entity));
     }
 }
+
+Lcd.setLine(0,"Waiting tweet request to @" + config.twitter.jukebox);
 
 process.on('SIGINT', function () {
   logger.info('Exiting...');
