@@ -2,12 +2,12 @@
 
 var config = require('./config');
 var logger = require('./logger');
-var Lcd    = require('./libs/raspberrypi/lcd_controller');
+var Lcd    = require('./' + config.hardware.lcd.lib);
 var Stream = require('./libs/' + config.twitter.capture_strategy + '_strategy');
 var TwitterParser = require('./libs/twitter_parser');
 var Music = require('./libs/music_controller');
 var Commands = require('./libs/commands')(Music);
-var Buttons = require('./libs/raspberrypi/buttons')(Music);
+var Buttons = require('./' + config.hardware.buttons.lib)(Music);
 
 Stream.init();
 
