@@ -26,6 +26,10 @@ module.exports = {
         { name: "link", enabled: false, post_reply_on_success: true, post_reply_on_error: false }
     ],
     log_level: "info",
-    log_base_path: "./logs"
+    log_base_path: "./logs",
+    hardware: {
+        lcd: { enabled: false, lib: "libs/raspberrypi/lcd_controller" },
+        buttons: { enabled: false, lib: "libs/raspberrypi/buttons" }
+    }
 }
 
