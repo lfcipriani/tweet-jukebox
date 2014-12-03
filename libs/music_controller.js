@@ -5,7 +5,7 @@ var logger = require('../logger');
 var Lcd    = require('../' + config.hardware.lcd.lib);
 var Mopidy = require('mopidy');
 var Twitter = require('./twitter_post');
-var Track = require('./track_urls');
+var Track = require('./track_utils');
 var _ = require('underscore');
 _.str = require('underscore.string');
 

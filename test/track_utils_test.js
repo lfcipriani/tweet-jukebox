@@ -1,9 +1,9 @@
 var assert = require("assert");
 
 var config = require('../config');
-var Track = require("../libs/track_urls");
+var Track = require("../libs/track_utils");
 
-describe('libs/track_urls', function(){
+describe('libs/track_utils', function(){
 
   describe('getUrl', function(){
 

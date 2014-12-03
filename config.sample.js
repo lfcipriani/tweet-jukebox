@@ -24,6 +24,7 @@ module.exports = {
     },
     commands: [
         // select for each command if it is enabled and if should reply with a tweet/dm or not
+        // you can change the reply text inside each command file (see lib/commands dir)
         { name: "search", enabled: true, post_reply_on_success: true, post_reply_on_error: false },
         { name: "link", enabled: true, post_reply_on_success: true, post_reply_on_error: false },
         { name: "play", enabled: true, post_reply_on_success: false, post_reply_on_error: false },

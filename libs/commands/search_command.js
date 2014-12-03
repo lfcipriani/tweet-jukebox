@@ -2,7 +2,7 @@
 
 var _ = require('underscore');
 var Twitter = require('../twitter_post');
-var Track = require('../track_urls');
+var Track = require('../track_utils');
 var logger = require('../../logger');
 
 module.exports = function(musicController, cmd) {
