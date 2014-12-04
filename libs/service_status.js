@@ -34,7 +34,7 @@ module.exports = {
     },
     toLcdString: function() { 
         return _.str.sprintf("tracks:%s  [%s%d%d]", 
-                _.str.pad(remainingTracks,3,"0"), 
+                _.str.pad(remainingTracks,2,"0"), 
                 currentState,
                 (isMopidyOnline ? 1 : 0),
                 (isTwitterStreamingOnline ? 1 : 0));

@@ -61,17 +61,17 @@ mopidy.on("event:trackPlaybackStarted", function (data) {
     var url   = Track.getUrl(data.tl_track.track); 
     var source = Track.getSource(data.tl_track.track);
 
-    logger.info("NOW PLAYING: " + track + " " + user + " " + url);
-    Lcd.setLine(0, track + " " + user + " from " + source);
+    logger.info("NOW PLAYING: " + track + " (" + user + ") " + url);
+    Lcd.setLine(0, track + " (" + user + ") from " + source);
     if (config.music.now_playing_tweets_enabled) {
-        update = [
+        var tweet = [
             "#NowPlaying",
             _.str.prune(track, 140 - (11 + 25 + user.length + 3)),
             url,
             user
         ];
         Twitter.update({ 
-            "status": update.join(" ")
+            "status": tweet.join(" ")
         });
     }
 });
