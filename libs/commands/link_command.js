@@ -32,7 +32,7 @@ module.exports = function(musicController, cmd) {
 
     function addMusic(request, track) {
         logger.info("Music: " + track.name);
-        musicController.add(track.uri, function(data) {
+        musicController.add(track.uri, request.fromUser, function(data) {
             success(request, data);
         });
     }

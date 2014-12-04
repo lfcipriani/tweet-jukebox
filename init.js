@@ -8,12 +8,13 @@ var TwitterParser = require('./libs/twitter_parser');
 var Music = require('./libs/music_controller');
 var Commands = require('./libs/commands')(Music);
 var Buttons = require('./' + config.hardware.buttons.lib)(Music);
+var status = require('./libs/service_status');
 
 Stream.init();
 
 Stream.onTweet(function(tweet) {
     logger.info("Tweet: " + tweet.text);
-    Lcd.alertLine(0,"Got tweet!",1000);
+    Lcd.alertLine(1,"Got tweet!",1000);
     execute(tweet);
 });
 
@@ -37,7 +38,8 @@ function execute(entity) {
     }
 }
 
-Lcd.setLine(0,"Waiting tweet request to @" + config.twitter.jukebox);
+Lcd.setLine(0,"Tweet your request to @" + config.twitter.jukebox);
+Lcd.setLine(1,status.toLcdString());
 
 process.on('SIGINT', function () {
   logger.info('Exiting...');

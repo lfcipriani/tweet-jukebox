@@ -16,5 +16,16 @@ module.exports = {
             default:
                 return null;
         }
+    },
+    getString: function(track) {
+        var str = track.name;
+        if (track.artists) {
+            str = str.concat(" by ");
+            str = str.concat(track.artists[0].name);
+        }
+        return str;
+    },
+    getSource: function(track) {
+        return track.uri.match(/^(.*?):/)[1];
     }
 };

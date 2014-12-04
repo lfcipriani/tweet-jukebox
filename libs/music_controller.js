@@ -6,6 +6,7 @@ var Lcd    = require('../' + config.hardware.lcd.lib);
 var Mopidy = require('mopidy');
 var Twitter = require('./twitter_post');
 var Track = require('./track_utils');
+var status = require('./service_status');
 var _ = require('underscore');
 _.str = require('underscore.string');
 
@@ -17,37 +18,60 @@ var mopidy = new Mopidy({
 var mopidyOnline = false;
 var currentTrackId = 0;
 var lastTrackIdAdded = null;
+var tracksUser = {};
 
 mopidy.on("state:online", function () {
     mopidyOnline = true; 
+    Lcd.setLine(1,status.setMopidyStatus(true));
+    logger.info("Mopidy Online");
     mopidy.playback.getCurrentTlTrack({}).then(function(data){
-        logger.info("Mopidy Online");
         if (data) {
             currentTrackId = data.tlid;
             logger.info("Current track: " + JSON.stringify(data));
         }
-    });
-    mopidy.tracklist.getTlTracks({}).then(function(data){
-        if (data.length > 0) {
-            lastTrackIdAdded = data[data.length - 1].tlid
-            logger.info("Last added track: " + JSON.stringify(data[data.length - 1]));
-        }
+        mopidy.tracklist.getTlTracks({}).then(function(data){
+            if (data.length > 0) {
+                lastTrackIdAdded = data[data.length - 1].tlid
+                logger.info("Last added track: " + JSON.stringify(data[data.length - 1]));
+                Lcd.setLine(1,status.setRemainingTracks(lastTrackIdAdded - currentTrackId));
+            }
+        });
     });
 });
 
 mopidy.on("state:offline", function () {
+    Lcd.setLine(1,status.setMopidyStatus(false));
     mopidyOnline = false; 
     currentTrackId = 0;
     lastTrackIdAdded = null;
 });
 
+mopidy.on("event:playbackStateChanged", function (data) {
+    Lcd.alertLine(1,data.new_state);
+    Lcd.setLine(1,status.setPlayerState(data.new_state));
+    if (data.new_state == "stopped") {
+        Lcd.setLine(0,"Tweet your request to @" + config.twitter.jukebox);
+    }
+});
+
 mopidy.on("event:trackPlaybackStarted", function (data) {
     currentTrackId = data.tl_track.tlid;
-    logger.info("NOW PLAYING: "+JSON.stringify(data));
-    Lcd.setLine(0,"#NowPlaying " + data.tl_track.track.name);
+    var track = Track.getString(data.tl_track.track);
+    var user  = "@" + tracksUser[data.tl_track.tlid];
+    var url   = Track.getUrl(data.tl_track.track); 
+    var source = Track.getSource(data.tl_track.track);
+
+    logger.info("NOW PLAYING: " + track + " " + user + " " + url);
+    Lcd.setLine(0, track + " " + user + " from " + source);
     if (config.music.now_playing_tweets_enabled) {
+        update = [
+            "#NowPlaying",
+            _.str.prune(track, 140 - (11 + 25 + user.length + 3)),
+            url,
+            user
+        ];
         Twitter.update({ 
-            "status": "#NowPlaying " + data.tl_track.track.name.slice(0,102) + " " + Track.getUrl(data.tl_track.track)
+            "status": update.join(" ")
         });
     }
 });
@@ -55,6 +79,7 @@ mopidy.on("event:trackPlaybackStarted", function (data) {
 mopidy.on("event:trackPlaybackEnded", function (data) {
     // TODO; improve how to track end of tracklist
     var lastTrack = data;
+    delete tracksUser[data.tl_track.tlid];
     if (data.tl_track.tlid == lastTrackIdAdded) {
         mopidy.tracklist.clear();
         logger.info("cleaning playlist");
@@ -86,11 +111,12 @@ module.exports = {
         mopidy.tracklist.clear();
     },
 
-    add: function(uri, callback) {
+    add: function(uri, fromUser, callback) {
         var that = this;
         mopidy.tracklist.add({"tracks": null, "at_position": null, "uri": uri}).then(function(data){
             if (data.length > 0) {
                 lastTrackIdAdded = data[0].tlid;
+                tracksUser[lastTrackIdAdded] = fromUser;
                 logger.info("Music added");
                 that.getPlayerState(function(state){
                     if (state != "playing") {
@@ -112,4 +138,4 @@ module.exports = {
 
 // ref.
 // tracklist.next_track
-// event:playbackStateChanged { old_state: 'stopped', new_state: 'playing' }
+//  { old_state: 'stopped', new_state: 'playing' }

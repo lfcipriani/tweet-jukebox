@@ -51,7 +51,7 @@ module.exports = function(musicController, cmd) {
 
                 if (resultTracks.length > 0) {
                     logger.info("Music: " + resultTracks[0].name);
-                    musicController.add(resultTracks[0].uri, function(data) {
+                    musicController.add(resultTracks[0].uri, request.fromUser, function(data) {
                         success(request, data);
                     });
                 } else {
