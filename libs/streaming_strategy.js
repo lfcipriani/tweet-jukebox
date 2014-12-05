@@ -2,6 +2,8 @@
 
 var config = require('../config');
 var logger = require('../logger');
+var Lcd    = require('../' + config.hardware.lcd.lib);
+var status = require('./service_status');
 var Twit = require('twit');
 
 var T = new Twit(config.twitter.api_keys);
@@ -24,6 +26,8 @@ module.exports = {
 
         userStream.on('friends', function(friendsMsg) {
             logger.info("Friends received... Capturing replies...");
+            // TODO set streaming false if connection break
+            Lcd.setLine(1,status.setTwitterStreamingStatus(true));
         });
     },
 
