@@ -32,9 +32,9 @@ module.exports = {
         remainingTracks = count;
         return this.toLcdString();
     },
-    toLcdString: function() { 
-        return _.str.sprintf("tracks:%s  [%s%d%d]", 
-                _.str.pad(remainingTracks,2,"0"), 
+    toLcdString: function() {
+        return _.str.sprintf("queue:%s  [%s%d%d]", 
+                _.str.pad(remainingTracks,3,"0"), 
                 currentState,
                 (isMopidyOnline ? 1 : 0),
                 (isTwitterStreamingOnline ? 1 : 0));
