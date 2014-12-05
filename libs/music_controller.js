@@ -31,14 +31,20 @@ mopidy.on("state:online", function () {
         }
         mopidy.tracklist.getTlTracks({}).then(function(data){
             if (data.length > 0) {
-                lastTrackIdAdded = data[data.length - 1].tlid
+                var tl_track = data[data.length - 1]; 
+                lastTrackIdAdded = tl_track.tlid
                 if (currentTrackId == null) {
                     currentTrackId = lastTrackIdAdded;
                 } 
-                // TODO play the jukebox if theres music
-                lastTrackIdAdded = data[data.length - 1].tlid
-                logger.info("Last added track: " + JSON.stringify(data[data.length - 1]));
+                lastTrackIdAdded = tl_track.tlid;
+                logger.info("Last added track: " + JSON.stringify(tl_track));
                 Lcd.setLine(1,status.setRemainingTracks(lastTrackIdAdded - currentTrackId));
+                mopidy.playback.getState().then(function(data) {
+                    if (data != "playing") {
+                        module.exports.play();
+                    } 
+                    notifyNowPlaying(tl_track);
+                });
             }
         });
     });
@@ -61,28 +67,8 @@ mopidy.on("event:playbackStateChanged", function (data) {
 
 mopidy.on("event:trackPlaybackStarted", function (data) {
     currentTrackId = data.tl_track.tlid;
-    var track = Track.getString(data.tl_track.track);
-    var url   = Track.getUrl(data.tl_track.track); 
-    var source = Track.getSource(data.tl_track.track);
-    var user = "";
-    if (tracksUser[data.tl_track.tlid]) {
-        user  = "@" + tracksUser[data.tl_track.tlid];
-    } 
-
-    logger.info("NOW PLAYING: " + track + " (" + user + ") " + url);
-    Lcd.setLine(0, track + " (" + user + ") from " + source);
     Lcd.setLine(1,status.setRemainingTracks(lastTrackIdAdded - currentTrackId));
-    if (config.music.now_playing_tweets_enabled) {
-        var tweet = [
-            "#NowPlaying",
-            _.str.prune(track, 140 - (11 + 25 + user.length + 3)),
-            url,
-            user
-        ];
-        Twitter.update({ 
-            "status": tweet.join(" ")
-        });
-    }
+    notifyNowPlaying(data.tl_track.track);
 });
 
 mopidy.on("event:trackPlaybackEnded", function (data) {
@@ -94,6 +80,30 @@ mopidy.on("event:trackPlaybackEnded", function (data) {
         logger.info("cleaning playlist");
     }
 });
+
+function notifyNowPlaying(tl_track) {
+    var track  = Track.getString(tl_track.track);
+    var url    = Track.getUrl(tl_track.track); 
+    var source = Track.getSource(tl_track.track);
+    var user   = "";
+    if (tracksUser[tl_track.tlid]) {
+        user  = "@" + tracksUser[tl_track.tlid];
+    } 
+
+    logger.info("NOW PLAYING: " + track + " (" + user + ") " + url);
+    Lcd.setLine(0, track + " (" + user + ") from " + source);
+    if (config.music.now_playing_tweets_enabled) {
+        var tweet = [
+            "#NowPlaying",
+            _.str.prune(track, 140 - (11 + 25 + user.length + 3)),
+            url,
+            user
+        ];
+        Twitter.update({ 
+            "status": tweet.join(" ")
+        });
+    }
+}
 
 module.exports = {
     isOnline: mopidyOnline,
