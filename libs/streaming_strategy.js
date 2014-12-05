@@ -26,8 +26,12 @@ module.exports = {
 
         userStream.on('friends', function(friendsMsg) {
             logger.info("Friends received... Capturing replies...");
-            // TODO set streaming false if connection break
             Lcd.setLine(1,status.setTwitterStreamingStatus(true));
+        });
+
+        userStream.on('disconnect', function (disconnectMessage) {
+            logger.warn("Disconnected from Twitter: " + disconnectMessage);
+            Lcd.setLine(1,status.setTwitterStreamingStatus(false));
         });
     },
 
