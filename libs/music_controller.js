@@ -68,7 +68,7 @@ mopidy.on("event:playbackStateChanged", function (data) {
 mopidy.on("event:trackPlaybackStarted", function (data) {
     currentTrackId = data.tl_track.tlid;
     Lcd.setLine(1,status.setRemainingTracks(lastTrackIdAdded - currentTrackId));
-    notifyNowPlaying(data.tl_track.track);
+    notifyNowPlaying(data.tl_track);
 });
 
 mopidy.on("event:trackPlaybackEnded", function (data) {
