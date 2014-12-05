@@ -35,6 +35,7 @@ mopidy.on("state:online", function () {
                 if (currentTrackId == null) {
                     currentTrackId = lastTrackIdAdded;
                 } 
+                // TODO play the jukebox if theres music
                 lastTrackIdAdded = data[data.length - 1].tlid
                 logger.info("Last added track: " + JSON.stringify(data[data.length - 1]));
                 Lcd.setLine(1,status.setRemainingTracks(lastTrackIdAdded - currentTrackId));
@@ -125,6 +126,7 @@ module.exports = {
             if (data.length > 0) {
                 lastTrackIdAdded = data[0].tlid;
                 tracksUser[lastTrackIdAdded] = fromUser;
+                Lcd.setLine(1,status.setRemainingTracks(lastTrackIdAdded - currentTrackId));
                 logger.info("Music added");
                 that.getPlayerState(function(state){
                     if (state != "playing") {
@@ -144,6 +146,3 @@ module.exports = {
     }
 };
 
-// ref.
-// tracklist.next_track
-//  { old_state: 'stopped', new_state: 'playing' }
