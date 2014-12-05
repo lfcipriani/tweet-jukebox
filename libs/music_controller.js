@@ -16,7 +16,7 @@ var mopidy = new Mopidy({
 });
 
 var mopidyOnline = false;
-var currentTrackId = 0;
+var currentTrackId = null;
 var lastTrackIdAdded = null;
 var tracksUser = {};
 
@@ -32,6 +32,10 @@ mopidy.on("state:online", function () {
         mopidy.tracklist.getTlTracks({}).then(function(data){
             if (data.length > 0) {
                 lastTrackIdAdded = data[data.length - 1].tlid
+                if (currentTrackId == null) {
+                    currentTrackId = lastTrackIdAdded;
+                } 
+                lastTrackIdAdded = data[data.length - 1].tlid
                 logger.info("Last added track: " + JSON.stringify(data[data.length - 1]));
                 Lcd.setLine(1,status.setRemainingTracks(lastTrackIdAdded - currentTrackId));
             }
@@ -42,7 +46,7 @@ mopidy.on("state:online", function () {
 mopidy.on("state:offline", function () {
     Lcd.setLine(1,status.setMopidyStatus(false));
     mopidyOnline = false; 
-    currentTrackId = 0;
+    currentTrackId = null;
     lastTrackIdAdded = null;
 });
 
@@ -57,12 +61,16 @@ mopidy.on("event:playbackStateChanged", function (data) {
 mopidy.on("event:trackPlaybackStarted", function (data) {
     currentTrackId = data.tl_track.tlid;
     var track = Track.getString(data.tl_track.track);
-    var user  = "@" + tracksUser[data.tl_track.tlid];
     var url   = Track.getUrl(data.tl_track.track); 
     var source = Track.getSource(data.tl_track.track);
+    var user = "";
+    if (tracksUser[data.tl_track.tlid]) {
+        user  = "@" + tracksUser[data.tl_track.tlid];
+    } 
 
     logger.info("NOW PLAYING: " + track + " (" + user + ") " + url);
     Lcd.setLine(0, track + " (" + user + ") from " + source);
+    Lcd.setLine(1,status.setRemainingTracks(lastTrackIdAdded - currentTrackId));
     if (config.music.now_playing_tweets_enabled) {
         var tweet = [
             "#NowPlaying",

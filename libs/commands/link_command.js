@@ -11,9 +11,9 @@ module.exports = function(musicController, cmd) {
 
     function success(request, data) {
         if (cmd.post_reply_on_success) {
-            var next = data[0].tlid - musicController.getCurrentTrackId();
+            var next = (musicController.getCurrentTrackId() ? data[0].tlid - musicController.getCurrentTrackId() : 0);
             var msg = null;
-            if (musicController.getCurrentTrackId() == 0 || next == 0) {
+            if (next == 0) {
                 msg = "Playing " + Track.getUrl(data[0].track) + " right now";
             } else if (next == 1) {
                 msg = "Next song will be " + Track.getUrl(data[0].track);
