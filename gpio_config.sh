@@ -8,7 +8,7 @@
 # sudo make install
 # sudo adduser $USER gpio
 #
-gpio-admin export 16 pullup
-gpio-admin export 18 pullup
-gpio-admin export 20 pullup
-gpio-admin export 23 pullup
+/usr/local/bin/gpio-admin export 16 pullup
+/usr/local/bin/gpio-admin export 18 pullup
+/usr/local/bin/gpio-admin export 20 pullup
+/usr/local/bin/gpio-admin export 23 pullup
