@@ -11,11 +11,12 @@ if (!fs.existsSync(basePath)) {
 
 var logger = new (winston.Logger)({
     transports: [
-        new winston.transports.File({ json: false, filename: basePath + '/tweet_jukebox.log', level: config.log_level })
+	new (winston.transports.Console)()
+        //new winston.transports.File({ json: false, filename: basePath + '/tweet_jukebox.log', level: config.log_level })
     ],
     exceptionHandlers: [
         new winston.transports.Console(),
-        new winston.transports.File({ json: false, filename: basePath + '/exceptions.log', level: config.log_level })
+        //new winston.transports.File({ json: false, filename: basePath + '/exceptions.log', level: config.log_level })
     ],
     exitOnError: false
   });
