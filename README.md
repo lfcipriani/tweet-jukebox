@@ -3,7 +3,7 @@ tweet-jukebox
 
 [![Build Status](https://travis-ci.org/lfcipriani/tweet-jukebox.svg?branch=master)](https://travis-ci.org/lfcipriani/tweet-jukebox)
 
-A jukebox powered by tweets.
+A jukebox powered by tweets on a Raspberry Pi.
 
                     +---------------------------------+
                     |                                 |
@@ -18,6 +18,9 @@ A jukebox powered by tweets.
                     +---------------------------------+
 
 
+The device:
+
+![Tweet jukebox picture](docs/tweetjukebox.png)
 
 ## Resources needed
 
@@ -28,6 +31,10 @@ A jukebox powered by tweets.
 * Network
 
 You can run on any device and OS that supports these softwares. I'm running everything on a Raspberry Pi
+
+## Schematic
+
+![Schematic](docs/schematic.png)
 
 More instructions soon...
 
