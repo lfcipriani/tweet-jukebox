@@ -5,6 +5,20 @@ tweet-jukebox
 
 A jukebox powered by tweets.
 
+                    +---------------------------------+
+                    |                                 |
+    Tweet           | Raspberry Pi                    |
+    (music request) |                                 |
+       +            | +-----------+      +----------+ |           \o/ Music powered by:
+       |            | | Twitter   | +--> | Mopidy   | |             Spotify
+       +--------------> Streaming |      | Server   +------------>  Youtube
+         network    | | API       | <--+ |          | |  audio      Soundcloud
+                    | +-----------+      +----------+ |
+                    |                                 |
+                    +---------------------------------+
+
+
+
 ## Resources needed
 
 * Mopidy music server
@@ -13,7 +27,9 @@ A jukebox powered by tweets.
 * Twitter Streaming API
 * Network
 
-The intention is to install everything in a Raspberry Pi and have a standalone radio, but it will work on any OS that supports the resources.
+You can run on any device and OS that supports these softwares. I'm running everything on a Raspberry Pi
 
-More instructions coming soon...
+More instructions soon...
+
+Copyright 2015 Luis Cipriani. Under Apache v2 License terms
 
